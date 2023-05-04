@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : localhost:3306
--- Généré le : mer. 03 mai 2023 à 13:57
+-- Généré le : jeu. 04 mai 2023 à 13:21
 -- Version du serveur :  10.3.38-MariaDB-0ubuntu0.20.04.1
 -- Version de PHP : 8.2.5
 
@@ -21,8 +21,6 @@ SET time_zone = "+00:00";
 --
 -- Base de données : `GYM`
 --
-CREATE DATABASE IF NOT EXISTS `GYM` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
-USE `GYM`;
 
 -- --------------------------------------------------------
 
@@ -38,7 +36,7 @@ CREATE TABLE `ARTICLES` (
   `STOCK` int(11) NOT NULL,
   `FEATURED` tinyint(4) NOT NULL,
   `CREATION_DATE` timestamp NOT NULL DEFAULT current_timestamp(),
-  `MODIFICATION_DATE` timestamp NOT NULL DEFAULT current_timestamp(),
+  `UPDATE_DATE` timestamp NULL DEFAULT NULL,
   `CATEGORIES_ID` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
@@ -1374,21 +1372,21 @@ CREATE TABLE `USERS` (
   `NAME` varchar(45) NOT NULL,
   `SURNAME` varchar(45) NOT NULL,
   `EMAIL` varchar(100) NOT NULL,
+  `PASSWORD` varchar(255) NOT NULL,
   `GENDER` varchar(20) NOT NULL,
   `ADDRESS1` varchar(255) NOT NULL,
   `ADDRESS2` varchar(255) DEFAULT NULL,
+  `CITIES_ID` int(11) NOT NULL,
   `ZIP_CODE` varchar(4) NOT NULL,
-  `PASSWORD` varchar(255) NOT NULL,
-  `IS_ADMIN` tinyint(4) NOT NULL,
-  `CITIES_ID` int(11) NOT NULL
+  `IS_ADMIN` tinyint(4) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 --
 -- Déchargement des données de la table `USERS`
 --
 
-INSERT INTO `USERS` (`ID`, `NAME`, `SURNAME`, `EMAIL`, `GENDER`, `ADDRESS1`, `ADDRESS2`, `ZIP_CODE`, `PASSWORD`, `IS_ADMIN`, `CITIES_ID`) VALUES
-(1, 'Soares Rodrigues', 'Flavio', 'admin@gym.ch', 'homme', 'Grand-Montfleury', '', '1290', '$2y$10$goXolnzimpX63UFOttHh9O.zcy3JrkQAVs5fg9A2C56AVMzsKI9xC', 1, 93);
+INSERT INTO `USERS` (`ID`, `NAME`, `SURNAME`, `EMAIL`, `PASSWORD`, `GENDER`, `ADDRESS1`, `ADDRESS2`, `CITIES_ID`, `ZIP_CODE`, `IS_ADMIN`) VALUES
+(1, 'Soares Rodrigues', 'Flavio', 'admin@gym.ch', '$2y$10$goXolnzimpX63UFOttHh9O.zcy3JrkQAVs5fg9A2C56AVMzsKI9xC', 'homme', 'Grand-Montfleury', '', 93, '1290', 1);
 
 --
 -- Index pour les tables déchargées
@@ -1467,7 +1465,7 @@ ALTER TABLE `IMAGES`
 -- AUTO_INCREMENT pour la table `USERS`
 --
 ALTER TABLE `USERS`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- Contraintes pour les tables déchargées
@@ -1503,6 +1501,6 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 
+-- Creer un utilisateur pour la base de données
 GRANT USAGE ON *.* TO `GYM_ADMIN`@`localhost` IDENTIFIED BY PASSWORD '*B2415CB57745112BC029951B95771BD951CA2243';
-
 GRANT ALL PRIVILEGES ON `GYM`.* TO `GYM_ADMIN`@`localhost`;

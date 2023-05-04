@@ -6,7 +6,7 @@
 	require_once $_SERVER['DOCUMENT_ROOT'].'/config/conparam.php';
 */
 
-require_once './config/conparam.php';
+require_once '../config/conparam.php';
 
 /** @brief		Helper class encapsulating the PDO object
  * 	@author 	dominique@aigroz.com
