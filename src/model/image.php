@@ -13,19 +13,24 @@ require_once '../containers/Image.php';
  */
 function AddEnc64Image($content, $fileName, $fileType, $mainImage, $articlesId)
 {
+    // Encodage de l'image en base64
+    $encoded64Content = 'data:'.$fileType.';base64, '.base64_encode($content);
+
     // Requête SQL pour insérer une image dans la base de données
-    $sql = "INSERT INTO `IMAGE` (`CONTENT` `NAME`, `TYPE`, `MAIN_IMAGE`, `ARTICLES_ID`) VALUES(:content, :fType, :fName, :mainImage, :articlesId)";
+    $sql = "INSERT INTO `IMAGES` (`CONTENT`, `NAME`, `TYPE`, `MAIN_IMAGE`, `ARTICLES_ID`) VALUES(:encoded64Content, :fName, :fType, :mainImage, :articlesId)";
 
     // Prépare la requête SQL
     $statement = EDatabase::prepare($sql);
 
-    // Encodage de l'image en base64
-    $srcImageEnc64 = 'data:'.$fileType.';base64, '.base64_encode($content);
-
     try
     {
         // Execute la requête SQL avec les paramètres nécessaire
-        $statement->execute(array(":content" => $content, ":fName" => $fileName, ":fType" => $fileType, ":mainImage" => $mainImage, ":articlesId" => $articlesId));
+        $statement->execute(array(
+        ":encoded64Content" => $encoded64Content,
+        ":fName" => $fileName,
+        ":fType" => $fileType,
+        ":mainImage" => $mainImage,
+        ":articlesId" => $articlesId));
     }
     // En cas d'erreur, retourne false
     catch (PDOException $e)
@@ -47,11 +52,11 @@ function GetImages($articlesId)
     $arrayImage = array();
 
     // Requête SQL qui récupère les images d'un article
-    $query = "SELECT `ID`, `CONTENT`, `NAME`, `TYPE`, `MAIN_IMAGE`, `ARTICLES_ID` FROM `IMAGES`
+    $sql = "SELECT `ID`, `CONTENT`, `NAME`, `TYPE`, `MAIN_IMAGE`, `ARTICLES_ID` FROM `IMAGES`
     WHERE `ARTICLES_ID` = :articlesId";
 
     // Prépare la requête SQL
-    $statement = EDatabase::prepare($query);
+    $statement = EDatabase::prepare($sql);
 
     try
     {
@@ -91,12 +96,12 @@ function GetImages($articlesId)
 function GetMainImage($articlesId)
 {
     // Requête SQL qui récupère l' image principale d'un article
-    $query = "SELECT `ID`, `CONTENT`, `NAME`, `TYPE`, `MAIN_IMAGE`, `ARTICLES_ID` FROM `IMAGES`
+    $sql = "SELECT `ID`, `CONTENT`, `NAME`, `TYPE`, `MAIN_IMAGE`, `ARTICLES_ID` FROM `IMAGES`
     WHERE `ARTICLES_ID` = :articlesId
     AND `MAIN_IMAGE` = 1";
 
     // Prépare la requête SQL
-    $statement = EDatabase::prepare($query);
+    $statement = EDatabase::prepare($sql);
 
     try
     {
@@ -130,10 +135,10 @@ function GetMainImage($articlesId)
 function DeleteImage($imageId)
 {
     // Requête SQL qui supprime une image en fonction de son ID
-    $query = "DELETE FROM `IMAGES` WHERE `ID` = :imageId";
+    $sql = "DELETE FROM `IMAGES` WHERE `ID` = :imageId";
 
     // Prépare la requête SQL
-    $statement = EDatabase::prepare($query);
+    $statement = EDatabase::prepare($sql);
 
     try
     {

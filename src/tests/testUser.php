@@ -1,6 +1,6 @@
 <?php
-require_once '../api/user.php';
-require_once '../api/tools.php';
+require_once '../model/user.php';
+require_once '../model/tools.php';
 StartNewSession();
 
 // Test la fonction RegisterUser dans le cas ou tout est correcte (email unique non verrifier ici)

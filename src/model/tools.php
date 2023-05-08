@@ -16,3 +16,9 @@ function StartNewSession()
         ];
     }
 }
+
+
+function GetConnectedUser()
+{
+    
+}

@@ -87,22 +87,29 @@ function GetUser($email)
 
 /**
  * Vérifie si un email est déjà présent dans la base de données.
- * 
- * @param string email L'adresse email à rechercher.
+ *
+ * @param string $email L'adresse email à rechercher.
  * @return bool True si l'email existe, False sinon.
  */
 function EmailExists($email)
 {
-    $query = "SELECT `EMAIL` FROM USERS WHERE `EMAIL` = :email";
-    $statement = EDatabase::prepare($query);
+    // Requête SQL pour récupérer l'email dans la table USERS
+    $sql = "SELECT `EMAIL` FROM USERS WHERE `EMAIL` = :email";
+    
+    // Prépare la requête SQL
+    $statement = EDatabase::prepare($sql);
 
     try
     {
+        // Exécute la requête SQL avec l'email en paramètre
         $statement->execute(array(":email" => $email));
-        return boolval($statement->rowCount() > 0); // retourne true si l'adresse existe sinon false
+        
+        // Vérifie le nombre de lignes de résultats pour déterminer si l'email existe
+        return boolval($statement->rowCount() > 0);
     }
     catch(PDOException $e)
     {
+        // En cas d'erreur, retourne False
         return false;
     }
 }
@@ -135,11 +142,13 @@ function LoginUser($email, $password)
         }
         else
         {
-            return "L'email ou le mot de passe est incorrect."; // Retourne un message d'erreur si le mot de passe est incorrect
+            // Retourne un message d'erreur si le mot de passe est incorrect
+            return "L'email ou le mot de passe est incorrect.";
         }
     }
     else
     {
-        return "L'email ou le mot de passe est incorrect."; // Retourne un message d'erreur si l'email n'existe pas dans la base de données
+        // Retourne un message d'erreur si l'email n'existe pas dans la base de données
+        return "L'email ou le mot de passe est incorrect.";
     }
 }
