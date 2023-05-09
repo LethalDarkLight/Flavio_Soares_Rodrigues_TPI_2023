@@ -11,14 +11,19 @@ main
     text-align: center;
 }
 
-h1
+h2
 {
     text-align: center;
 }
 
 .submitBtn
 {
-    width: 35%;
+    width: 100%;
+}
+
+.fa-star-of-life
+{
+    font-size: 12px;
 }
 
 
@@ -27,11 +32,6 @@ h1
     main
     {
       width: 65%;
-    }
-
-    .submitBtn
-    {
-        width: 40%;
     }
 }
 
@@ -49,10 +49,5 @@ h1
     main
     {
         width: 90%;
-    }
-
-    .submitBtn
-    {
-        width: 100%;
     }
 }

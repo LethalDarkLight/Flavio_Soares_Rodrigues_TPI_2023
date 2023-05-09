@@ -26,8 +26,6 @@ else
     echo 'Utilisateur est pas admin';
 }
 
-
-
 ESessiontManager::Clear();
 
 $userId = ESessiontManager::GetConnectedUserId();
