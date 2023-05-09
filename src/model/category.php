@@ -1,6 +1,6 @@
 <?php
-require_once '../db/database.php';
-require_once '../containers/Category.php';
+require_once ROOT.'db/database.php';
+require_once ROOT.'containers/Category.php';
 
 /**
  * Récupère la liste des catégories sous forme d'objet Category

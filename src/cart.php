@@ -5,7 +5,7 @@
 // This page requires to be authenticated
 $REQUIREDLOGIN = true;
 
-include_once './check_all.php';
+require_once './check_all.php';
 
 
 

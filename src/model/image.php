@@ -1,6 +1,6 @@
 <?php
-require_once '../db/database.php';
-require_once '../containers/Image.php';
+require_once ROOT.'db/database.php';
+require_once ROOT.'containers/Image.php';
 
 /**
  * Insère une image encodée en base64 dans la base de données.

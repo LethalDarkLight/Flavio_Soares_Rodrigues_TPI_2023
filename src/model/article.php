@@ -1,6 +1,6 @@
 <?php
-require_once '../db/database.php';
-require_once '../containers/Article.php';
+require_once ROOT.'db/database.php';
+require_once ROOT.'containers/Article.php';
 
 /**
  * Ajoute un nouvel article dans la base de données

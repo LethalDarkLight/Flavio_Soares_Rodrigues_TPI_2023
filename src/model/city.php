@@ -1,6 +1,6 @@
 <?php
-require_once '../db/database.php';
-require_once '../containers/City.php';
+require_once ROOT.'db/database.php';
+require_once ROOT.'containers/City.php';
 
 /**
  * Récupère la liste des villes sous forme d'objet City

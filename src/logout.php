@@ -1,5 +1,3 @@
 <?php
-
-include_once './check_all.php';
-
+require_once './includes/checkAll.php';
 ESessiontManager::Clear();

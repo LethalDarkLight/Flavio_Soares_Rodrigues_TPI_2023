@@ -1,6 +1,7 @@
 <?php
-require_once '../db/database.php';
-require_once '../containers/User.php';
+require_once ROOT.'db/database.php';
+require_once ROOT.'containers/User.php';
+require_once ROOT.'session/SessionManager.php';
 
 /**
  * Insère un nouvel utilisateur dans la table USERS de la base de données.
@@ -133,22 +134,21 @@ function LoginUser($email, $password)
         // Vérifie que le mot de passe est correct en utilisant la fonction password_verify() de PHP
         if (password_verify($password, $user->password))
         {
-            // Si le mot de passe est correct, enregistre l'utilisateur dans une session
-            $_SESSION['idUser'] = $user->id;
-            $_SESSION['admin'] = $user->isAdmin;
-            $_SESSION['connected'] = true;
+            // Créer une session avec l'utilisateur
+            ESessiontManager::SetUser($user->id, $user->isAdmin);
 
-            return ""; // Retourne une chaîne vide en cas de succès
+            // Retourne true si tout c'est bien passé
+            return true;
         }
         else
         {
-            // Retourne un message d'erreur si le mot de passe est incorrect
-            return "L'email ou le mot de passe est incorrect.";
+            // Retourne false si il y a une erreur
+            return false;
         }
     }
     else
     {
-        // Retourne un message d'erreur si l'email n'existe pas dans la base de données
-        return "L'email ou le mot de passe est incorrect.";
+        // Retourne false si il y a une erreur
+        return false;
     }
 }
