@@ -16,27 +16,49 @@ require_once ROOT.'session/SessionManager.php';
  * @param string $zipCode Code postal de l'utilisateur.
  * @return bool Retourne TRUE si l'inscription réussit, sinon FALSE.
 */
-function RegisterUser($name, $surname, $email, $password, $gender, $adress1, $adress2, $city, $zipCode)
+function RegisterUser($name, $surname, $email, $password, $gender, $address1, $address2, $city, $zipCode)
 {
     // Insère un nouvel utilisateur dans la table "USERS" de la base de données
     $sql = "INSERT INTO `USERS` (`NAME`, `SURNAME`, `EMAIL`, `PASSWORD`, `GENDER`, `ADDRESS1`, `ADDRESS2`, `CITIES_ID`, `ZIP_CODE`)
-    VALUES(:userName, :surname, :email, :pw, :gender, :adress1, :adress2, :cityID, :zipCode)";
+    VALUES(:name, :surname, :email, :pw, :gender, :address1, :address2, :cityID, :zipCode)";
 
     // Prépare la requête SQL
     $statement = EDatabase::prepare($sql);
 
     try
     {
-        // Exécute la requête en utilisant les valeurs passé en paramètre
-        $statement->execute(array(":userName" => $name, ":surname" => $surname, ":email" => $email, ":pw" => $password,
-        ":gender" => $gender, ":adress1" => $adress1, ":adress2" => $adress2, ":cityID" => $city, ":zipCode" => $zipCode));
+        // Crée un tableau des valeurs à exécuter
+        $params = array(
+            ":name" => $name,
+            ":surname" => $surname,
+            ":email" => $email,
+            ":pw" => $password,
+            ":gender" => $gender,
+            ":address1" => $address1,
+            ":cityID" => $city,
+            ":zipCode" => $zipCode
+        );
+
+        // Vérifie si $address2 est vide
+        if (!empty($address2))
+        {
+            $params[":address2"] = $address2;
+        }
+        else
+        {
+            // Si $address2 est vide, assigne une valeur nulle à :address2 dans le tableau des valeurs
+            $params[":address2"] = null;
+        }
+
+        // Exécute la requête en utilisant les valeurs passées en paramètre
+        $statement->execute($params);
     }
     catch (PDOException $e)
     {
-        // retourne false si il y a une erreur
+        // Retourne false en cas d'erreur
         return false;
     }
-    // retourne true si tout c'est bien passé
+    // Retourne true si tout s'est bien passé
     return true;
 }
 
@@ -71,7 +93,7 @@ function GetUser($email)
             $row['SURNAME'],            // SURNAME   : le prénom de l'utilisateur (chaîne de caractères)
             $row['EMAIL'],              // EMAIL     : l'adresse email de l'utilisateur (chaîne de caractères)
             $row['PASSWORD'],           // PASSWORD  : le mot de passe haché de l'utilisateur (chaîne de caractères)
-            $row['GENDER'],             // GENDER    : le genre de l'utilisateur (chaîne de caractères)
+            intval($row['GENDER']),     // GENDER    : le genre de l'utilisateur (entier)
             $row['ADDRESS1'],           // ADDRESS1  : la première adresse de l'utilisateur (chaîne de caractères)
             $row['ADDRESS2'],           // ADDRESS2  : la deuxième adresse de l'utilisateur (optionnel) (chaîne de caractères)
             $row['CITY'],               // CITY      : le nom de la ville où habite l'utilisateur (chaîne de caractères)

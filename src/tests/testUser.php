@@ -1,7 +1,6 @@
 <?php
 require_once '../model/user.php';
 require_once '../model/tools.php';
-StartNewSession();
 
 // Test la fonction RegisterUser dans le cas ou tout est correcte (email unique non verrifier ici)
 // RegisterUser("Du-pont", "Marcel", "MarcelDp@hotmail.ch", '$2y$10$fvm40snO.vBP8Wen8xt6qeRMsEU7.kqqHyPeP8WxEggx.pleBK0zS', "homme", "Av. des Grandes-Communes 2", "", 53, 1213); // retourne : true

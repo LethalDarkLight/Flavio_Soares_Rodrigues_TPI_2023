@@ -37,10 +37,18 @@ function validateRegister()
         // Met le focus sur l'input de l'email 
         password.focus();
     }
-    if (!validatePassword(password))
+    else if (!validatePasswordLength(password))
     {
         // Affiche un message d'erreur
-        passwordErrorMsg.innerText = "Le mot de passe doit contenir au minumum une majuscule, une minuscule et un chiffre";
+        passwordErrorMsg.innerText = "Le mot de passe doit faire 8 charactères minimum.";
+
+        // Met le focus sur l'input de l'email 
+        password.focus();
+    }
+    else if (!validatePasswordComplexity(password))
+    {
+        // Affiche un message d'erreur
+        passwordErrorMsg.innerText = "Le mot de passe doit contenir au minumum une majuscule, une minuscule et un chiffre.";
 
         // Met le focus sur l'input de l'email 
         password.focus();
@@ -82,13 +90,13 @@ function validateRegister()
     if (zipCode.value === "")
     {
         // Affiche un message d'erreur
-        zipCodeErrorMsg.innerText = "Le genre doit être selectionné";
+        zipCodeErrorMsg.innerText = "Le code postal doit être selectionné.";
         zipCode.focus();
     }
     else if (!/^\d{4}$/.test(zipCode.value))
     {
         // Affiche un message d'erreur
-        zipCodeErrorMsg.innerText = "Le code postal doit être composé de 4 chiffres uniquement";
+        zipCodeErrorMsg.innerText = "Le code postal doit être composé de 4 chiffres uniquement.";
         zipCode.focus();
     }
     else
@@ -100,10 +108,10 @@ function validateRegister()
 
 
     // Vérification de la ville
-    if (city.value === "0")
+    if (city.value === 0)
     {
         // Affiche un message d'erreur
-        cityErrorMsg.innerText = "La ville doit être selectionné";
+        cityErrorMsg.innerText = "La ville doit être selectionné.";
         city.focus();
     }
     else
@@ -118,7 +126,7 @@ function validateRegister()
     if (address.value === "")
     {
         // Affiche un message d'erreur
-        addressErrorMsg.innerText = "L'adresse est requise";
+        addressErrorMsg.innerText = "L'adresse est requise.";
         address.focus();
     }
     else
@@ -130,10 +138,10 @@ function validateRegister()
 
 
     // Vérification du genre
-    if (gender.value === "0")
+    if (gender.value === 0)
     {
         // Affiche un message d'erreur
-        genderErrorMsg.innerText = "Le genre doit être selectionné";
+        genderErrorMsg.innerText = "Le genre doit être selectionné.";
         gender.focus();
     }
     else
@@ -151,10 +159,10 @@ function validateRegister()
         surnameErrorMsg.innerText = "Le prénom est requis.";
         surname.focus();
     }
-    else if (!/^[a-zA-Z]+$/.test(surname.value))
+    else if (!/^[a-zA-Z\s-]+$/.test(surname.value))
     {
         // Affiche un message d'erreur
-        surnameErrorMsg.innerText = "Le prénom ne doit contenir que des lettres.";
+        surnameErrorMsg.innerText = "Le prénom ne doit contenir que des lettres, des espaces et des traits d'union.";
         surname.focus(); 
     }
     else
@@ -172,11 +180,11 @@ function validateRegister()
         nameErrorMsg.innerText = "Le nom est requis.";
         name.focus();
     }
-    else if (!/^[a-zA-Z]+$/.test(name.value))
+    else if (!/^[a-zA-Z\s-]+$/.test(name.value))
     {
         // Affiche un message d'erreur
-        nameErrorMsg.innerText = "Le nom ne doit contenir que des lettres.";
-        name.focus(); 
+        nameErrorMsg.innerText = "Le nom ne doit contenir que des lettres, des espaces et des traits d'union.";
+        name.focus();
     }
     else
     {
@@ -187,7 +195,7 @@ function validateRegister()
 
 
     // Si les messages d'erreur sont vides on retourne true sinon false
-    if (emailErrorMsg.innerText === "" && passwordErrorMsg.innerText === "" && nameErrorMsg.innerHTML === "" && surnameErrorMsg === "" && genderErrorMsg === "" && addressErrorMsg === "" && cityErrorMsg === "" && zipCodeErrorMsg === "")
+    if (emailErrorMsg.innerText === "" && passwordErrorMsg.innerText === "" && nameErrorMsg.innerHTML === "" && surnameErrorMsg.innerText === "" && genderErrorMsg.innerText === "" && addressErrorMsg.innerText === "" && cityErrorMsg.innerText === "" && zipCodeErrorMsg.innerText === "")
     {
         // Renvoie vrai, la saisie est valide
         return true; 
@@ -195,18 +203,25 @@ function validateRegister()
     else
     {
         // Efface le message d'erreur générer avec php
-        //errorMsg.innerHTML = "";
+        errorMsg.innerHTML = "";
 
         // Renvoie faux, il y a des erreurs de saisie
         return false;
     }
 }
-    
-function validatePassword(password)
+ 
+// Vérifie la longueur minimale du mot de passe
+function validatePasswordLength(password)
 {
-    // Expression régulière pour valider le mot de passe
-    const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
+    return password.value.length >= 8;
+}
+
+// Vérifie que le mot de passe contient une majuscule, une minuscule et un chiffre
+function validatePasswordComplexity(password)
+{
+    // Expression régulière pour vérifier la présence d'une majuscule, d'une minuscule et d'un chiffre
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).*$/;
     
     // Teste si le mot de passe correspond à l'expression régulière
-    return passwordRegex.test(password);
+    return passwordRegex.test(password.value);
 }

@@ -43,16 +43,16 @@ function AddArticle($name, $description, $price, $stock, $featured, $categoryId)
 }
 
 /**
- * Récupère un article grâce à son ID donné en paramètre
- * @param int $id L'ID de l'article à récupérer
+ * Récupère un article grâce à son nom donné en paramètre
+ * @param string $name le nom de l'article
  * @return mixed L'article récupéré sous forme d'objet Article, ou false si une erreur est survenue
  */
-function GetArticle($id)
+function GetArticle($name)
 {
     // Requête SQL qui récupère les données de l'article
     $sql = "SELECT `ID`, `NAME`, `DESCRIPTION`, `PRICE`, `STOCK`, `FEATURED`, `CREATION_DATE`, `UPDATE_DATE`, `CATEGORIES_ID`
     FROM `ARTICLES`
-    WHERE ID = :id";
+    WHERE `NAME` = :name";
 
     // Prépare la requête SQL
     $statement = EDatabase::prepare($sql);
@@ -60,7 +60,7 @@ function GetArticle($id)
     try
     {
         // Exécute la requête SQL en utilisant l'ID passé en paramètre
-        $statement->execute(array(":id" => $id));
+        $statement->execute(array(":name" => $name));
 
         // Récupère la première ligne de résultat
         $row = $statement->fetch(PDO::FETCH_ASSOC,PDO::FETCH_ORI_NEXT);
@@ -206,7 +206,7 @@ function GetFilteredArticles($text, $categoryId, $minPrice, $maxPrice)
                 intval($row['ID']),             // ID           : Identifiant de l'article (entier)
                 $row['NAME'],                   // NAME         : Nom de l'article (chaîne de caractères)
                 $row['DESCRIPTION'],            // DESCRIPTION  : Description de l'article (chaîne de caractères)
-                doubleval($row['PRICE']),        // PRICE        : Prix de l'article (nombre à virgule flottante)
+                doubleval($row['PRICE']),       // PRICE        : Prix de l'article (nombre à virgule flottante)
                 intval($row['STOCK']),          // STOCK        : Stock disponible de l'article (entier)
                 boolval($row['FEATURED']),      // FEATURED     : Indique si l'article est à la une (booléen)
                 $row['CREATION_DATE'],          // CREATION_DATE: Date de création de l'article (chaîne de caractères)

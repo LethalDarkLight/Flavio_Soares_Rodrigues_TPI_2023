@@ -134,7 +134,7 @@ class ESession extends SessionHandler {
 	 * @param number $ttl The time. Default is 30
 	 * @return boolean True if expired, otherwise false.
 	 */
-	public function isExpired($ttl = 30)
+	public function isExpired($ttl = 120)
 	{
 		$last = isset($_SESSION['_last_activity']) ? $_SESSION['_last_activity'] : false;
 		if ($last !== false && time() - $last > $ttl * 60) {

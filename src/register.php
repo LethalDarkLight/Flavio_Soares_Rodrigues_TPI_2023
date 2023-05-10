@@ -1,8 +1,7 @@
 <?php
     // Inclusion des fichiers nécessaires
-    require_once './includes/web.inc.all.php';
-    require_once ROOT.'includes/checkAll.php';
-    require_once ROOT. 'includes/registerTools.php';
+    require_once './includes/checkAll.php';
+    require_once ROOT. 'tools/registerTools.php';
 
     // Vérifie si la session de l'utilisateur est valide, si oui, redirige vers la page d'accueil
     if (ESessiontManager::IsValid() === true)
@@ -11,26 +10,49 @@
         exit();
     }
 
-    // Filtre les valeurs des inputs
-    $name = filter_input(INPUT_POST,"name", FILTER_SANITIZE_SPECIAL_CHARS);         // Nom
-    $surname = filter_input(INPUT_POST,"surname", FILTER_SANITIZE_SPECIAL_CHARS);   // Prénom
-    $gender = filter_input(INPUT_POST,"gender", FILTER_SANITIZE_SPECIAL_CHARS);     // Genre
-    $address1 = filter_input(INPUT_POST,"address1", FILTER_SANITIZE_SPECIAL_CHARS); // Adresse 2
-    $address2 = filter_input(INPUT_POST,"address2", FILTER_SANITIZE_SPECIAL_CHARS); // Adresse 2
-    $city = filter_input(INPUT_POST,"city", FILTER_SANITIZE_SPECIAL_CHARS);         // Ville
-    $zipCode = filter_input(INPUT_POST,"zipCode", FILTER_SANITIZE_SPECIAL_CHARS);   // Code postal
+    $name = "";
+    $surname = "";
+    $gender = 0;
+    $address1 = "";
+    $address2 = "";
+    $city = 0;
+    $zipCode = "";
 
-    $email = filter_input(INPUT_POST,"email", FILTER_VALIDATE_EMAIL);               // Email
-    $password = filter_input(INPUT_POST,"password", FILTER_SANITIZE_SPECIAL_CHARS); // Mot de passe
-    $submit = filter_input(INPUT_POST,"submit", FILTER_SANITIZE_SPECIAL_CHARS);     // Bouton de validation
+    $email = "";
+    $password = "";
 
     // Variable pour le message d'erreur géré avec php
     $msg = "";
 
     // Si le bouton du formulaire a été cliqué
-    if ($submit == "register")
+    if (isset($_POST['submit']))
     {
+        $name = filter_input(INPUT_POST,"name", FILTER_SANITIZE_SPECIAL_CHARS);             // Nom
+        $surname = filter_input(INPUT_POST,"surname", FILTER_SANITIZE_SPECIAL_CHARS);       // Prénom
+        $gender = intval(filter_input(INPUT_POST,"gender", FILTER_VALIDATE_INT));           // Genre
+        $address1 = filter_input(INPUT_POST,"address1", FILTER_SANITIZE_SPECIAL_CHARS);     // Adresse 1
+        $address2 = filter_input(INPUT_POST,"address2", FILTER_SANITIZE_SPECIAL_CHARS);     // Adresse 2
+        $city = intval(filter_input(INPUT_POST,"cities", FILTER_VALIDATE_INT));             // Ville
+        $zipCode = filter_input(INPUT_POST,"zipCode", FILTER_SANITIZE_SPECIAL_CHARS);       // Code postal
+        $email = filter_input(INPUT_POST,"email", FILTER_VALIDATE_EMAIL);                   // Email
+        $password = filter_input(INPUT_POST,"password", FILTER_SANITIZE_SPECIAL_CHARS);     // Mot de passe
 
+        if (EmailExists($email))
+        {
+            // Affiche un message d'erreur
+            $msg = "<i class='fa-solid fa-triangle-exclamation fa-xl me-2'></i>
+            L'email est déjà utilisé. <a class='card-link text-decoration-none' href='login.php'>Connectez-vous</a>";
+        }
+        else
+        {
+            // Hache le mot de passe avec un coût plus élevé
+            $passwordHashed = password_hash($password, PASSWORD_BCRYPT, ['cost' => 12]);
+
+            // Créer l'utilisateur
+            RegisterUser($name, $surname, $email, $passwordHashed, $gender, $address1, $address2, $city, $zipCode);
+
+            // Envois d'un mail à l'utilisateur
+        }
     }
 ?>
 
@@ -80,10 +102,10 @@
             <div class="my-4">
                 <label for="gender" class="form-label">Genre <i class="fa-sharp fa-solid fa-star-of-life text-primary"></i></label>
                 <select name="gender" id="gender" class="form-select" aria-describedby="genderHelp">
-                    <option value="0" <?php if ($gender == '') echo 'selected'; ?>>---</option>
-                    <option value="1" <?php if ($gender == '') echo 'selected'; ?>>Homme</option>
-                    <option value="2" <?php if ($gender == '') echo 'selected'; ?>>Femme</option>
-                    <option value="3" <?php if ($gender == '') echo 'selected'; ?>>Autre</option>
+                    <option value="0" <?php if ($gender == "0") echo 'selected'; ?>>---</option>
+                    <option value="1" <?php if ($gender == "1") echo 'selected'; ?>>Homme</option>
+                    <option value="2" <?php if ($gender == "2") echo 'selected'; ?>>Femme</option>
+                    <option value="3" <?php if ($gender == "3") echo 'selected'; ?>>Autre</option>
                 </select>
                 <div id="genderHelp" class="form-text text-danger"></div>
             </div>
@@ -106,7 +128,7 @@
                 <label for="cities" class="form-label">Ville <i class="fa-sharp fa-solid fa-star-of-life text-primary"></i></label>
                 <select name="cities" id="cities" class="form-select" aria-describedby="citiesHelp" aria-selected="<?=$cities?>">
                     <option value="0" selected>---</option>
-                    <?=ShowCities()?>
+                    <?=ShowCities($city)?>
                 </select>
                 <div id="citiesHelp" class="form-text text-danger"></div>
             </div>
@@ -128,7 +150,7 @@
             <!-- Mot de passe -->
             <div class="my-4">
                 <label for="password" class="form-label">Mot de passe <i class="fa-sharp fa-solid fa-star-of-life text-primary"></i></label>
-                <input name="password" type="password" class="form-control" id="password" aria-describedby="passwordHelp" minlength="8">
+                <input name="password" type="password" class="form-control" id="password" aria-describedby="passwordHelp">
                 <div id="passwordHelp" class="form-text text-danger"></div>
             </div>
 
@@ -138,12 +160,13 @@
             </div>
         </form>
 
-        <div class="text-center mt-2 card card-body">
+        <div class="text-center mt-2 mb-4 card card-body">
             <h6 class="card-subtitle mb-2"> Vous possédez déjà un compte ?</h6>
             <a class="card-link text-decoration-none" href="login.php">Connectez-vous</a>
         </div>
     </main>
     <script src="./assets/js/validateEmail.js"></script>
     <script src="./assets/js/validateRegister.js"></script>
+    <script src="./assets/libraries/bootstrap/bootstrap.js"></script>
 </body>
 </html>

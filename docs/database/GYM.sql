@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : localhost:3306
--- Généré le : jeu. 04 mai 2023 à 13:21
+-- Généré le : mer. 10 mai 2023 à 07:40
 -- Version du serveur :  10.3.38-MariaDB-0ubuntu0.20.04.1
 -- Version de PHP : 8.2.5
 
@@ -41,6 +41,24 @@ CREATE TABLE `ARTICLES` (
   `UPDATE_DATE` timestamp NULL DEFAULT NULL,
   `CATEGORIES_ID` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+--
+-- Déchargement des données de la table `ARTICLES`
+--
+
+INSERT INTO `ARTICLES` (`ID`, `NAME`, `DESCRIPTION`, `PRICE`, `STOCK`, `FEATURED`, `CREATION_DATE`, `UPDATE_DATE`, `CATEGORIES_ID`) VALUES
+(1, 'Kettlebell', 'La kettlebell est un poids traditionnel russe qui est munie d\'une poignée de prise fixe.', 39.9, 10, 1, '2023-05-08 05:44:48', NULL, 4),
+(14, 'KetterBel', 'La kettlebell est un poids traditionnel russe qui est munie d\'une poignée de prise fixe.', 39.9, 10, 1, '2023-05-08 06:12:37', NULL, 4),
+(15, 'KetterBe', 'La kettlebell est un poids traditionnel russe qui est munie d\'une poignée de prise fixe.', 39.9, 10, 1, '2023-05-08 06:12:42', NULL, 4),
+(16, 'KetterB', 'La kettlebell est un poids traditionnel russe qui est munie d\'une poignée de prise fixe.', 39.9, 10, 1, '2023-05-08 06:12:46', NULL, 4),
+(17, 'Ketter', 'La kettlebell est un poids traditionnel russe qui est munie d\'une poignée de prise fixe.', 39.9, 10, 1, '2023-05-08 06:12:50', NULL, 4),
+(18, 'Kette', 'La kettlebell est un poids traditionnel russe qui est munie d\'une poignée de prise fixe.', 39.9, 10, 1, '2023-05-08 06:12:59', NULL, 4),
+(19, 'Kett', 'La kettlebell est un poids traditionnel russe qui est munie d\'une poignée de prise fixe.', 39.9, 10, 1, '2023-05-08 06:13:03', NULL, 4),
+(20, 'Ket', 'La kettlebell est un poids traditionnel russe qui est munie d\'une poignée de prise fixe.', 39.9, 10, 1, '2023-05-08 06:13:06', NULL, 4),
+(21, 'Ke', 'La kettlebell est un poids traditionnel russe qui est munie d\'une poignée de prise fixe.', 39.9, 10, 1, '2023-05-08 06:13:10', NULL, 4),
+(22, 'K', 'La kettlebell est un poids traditionnel russe qui est munie d\'une poignée de prise fixe.', 39.9, 10, 1, '2023-05-08 06:13:13', NULL, 4),
+(23, 'Kdfsds', 'La kettlebell est un poids traditionnel russe qui est munie d\'une poignée de prise fixe.', 39.9, 10, 1, '2023-05-08 06:13:16', NULL, 4),
+(24, 'Hack squat', 'L’équipement parfait pour le développement du bas du corps. Maximisez les bénéfices des squats avec Hack Squat', 6999.95, 3, 0, '2023-05-08 09:27:57', NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -1375,7 +1393,7 @@ CREATE TABLE `USERS` (
   `SURNAME` varchar(45) NOT NULL,
   `EMAIL` varchar(100) NOT NULL,
   `PASSWORD` varchar(255) NOT NULL,
-  `GENDER` varchar(20) NOT NULL,
+  `GENDER` int(11) NOT NULL,
   `ADDRESS1` varchar(255) NOT NULL,
   `ADDRESS2` varchar(255) DEFAULT NULL,
   `CITIES_ID` int(11) NOT NULL,
@@ -1388,7 +1406,7 @@ CREATE TABLE `USERS` (
 --
 
 INSERT INTO `USERS` (`ID`, `NAME`, `SURNAME`, `EMAIL`, `PASSWORD`, `GENDER`, `ADDRESS1`, `ADDRESS2`, `CITIES_ID`, `ZIP_CODE`, `IS_ADMIN`) VALUES
-(1, 'Soares Rodrigues', 'Flavio', 'admin@gym.ch', '$2y$10$goXolnzimpX63UFOttHh9O.zcy3JrkQAVs5fg9A2C56AVMzsKI9xC', 'homme', 'Grand-Montfleury', '', 93, '1290', 1);
+(1, 'Soares Rodrigues', 'Flavio', 'admin@gym.ch', '$2y$10$qEZkeOED5SkjHWpkmno/r.Gkhu/7AEB0yByg9DadB3XzbHLmDTYrK', 1, 'Grand-Montfleury', '', 93, '1290', 1),;
 
 --
 -- Index pour les tables déchargées
@@ -1443,7 +1461,7 @@ ALTER TABLE `USERS`
 -- AUTO_INCREMENT pour la table `ARTICLES`
 --
 ALTER TABLE `ARTICLES`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- AUTO_INCREMENT pour la table `CATEGORIES`
@@ -1467,7 +1485,7 @@ ALTER TABLE `IMAGES`
 -- AUTO_INCREMENT pour la table `USERS`
 --
 ALTER TABLE `USERS`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- Contraintes pour les tables déchargées

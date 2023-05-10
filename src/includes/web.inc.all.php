@@ -1,8 +1,5 @@
 <?php
 
-// Constante pour avoir le chemin absolu
-define('ROOT', $_SERVER['DOCUMENT_ROOT']."/Flavio_Soares_Rodrigues_TPI_2023/src/");
-
 //  Le fichier de gestion des sessions
 require_once ROOT.'session/SessionManager.php';
 

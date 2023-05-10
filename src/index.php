@@ -1,16 +1,26 @@
 <?php
-require_once './includes/web.inc.all.php';
-require_once ROOT.'includes/checkAll.php';
+// Inclusion des fichiers nécessaires
+require_once './includes/checkAll.php';
 
-// Test si la session est valide
-if (ESessiontManager::IsValid() === true)
+function ShowFeaturedArticles()
 {
-    echo 'Session valid';
+    // Récupère toutes les villes
+    $featuredArticles = GetFeaturedArticles();
+
+    $result = "";
+    
+    // Affiche chaque ville dans la combo box
+    foreach ($featuredArticles as $article)
+    {
+        $mainImage = GetMainImage($article->id);
+
+        $result .= "<img src='$mainImage->content' alt='$mainImage->name'>
+        <h3>$article->name</h3>
+        <p>$article->price</p>";
+    }
+    echo $result;
 }
-else
-{
-    echo 'Session not valid';
-}
+
 ?>
 
 <!DOCTYPE html>
@@ -19,9 +29,26 @@ else
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Connexion</title>
+    <title>Accueil</title>
+
+    <!-- Fontawesome -->
+    <link href="assets/libraries/fontawesome/css/fontawesome.css" rel="stylesheet">
+    <link href="assets/libraries/fontawesome/css/brands.css" rel="stylesheet">
+    <link href="assets/libraries/fontawesome/css/solid.css" rel="stylesheet">
+    <link href="assets/libraries/fontawesome/css/regular.css" rel="stylesheet">
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="assets/libraries/bootstrap/bootstrap.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
-    
+    <?=ShowFeaturedArticles()?>
+
+    <main class="mx-auto mt-5">
+
+    </main>
+<script src="./assets/libraries/bootstrap/bootstrap.js"></script>
 </body>
 </html>

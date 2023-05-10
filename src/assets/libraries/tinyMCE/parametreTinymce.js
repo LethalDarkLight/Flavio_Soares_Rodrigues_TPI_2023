@@ -1,5 +1,5 @@
 tinymce.init({
-    selector: '#mytextarea',
+    selector: '#description',
 
     // Plugins
     plugins: 'lists code emoticons link wordcount',

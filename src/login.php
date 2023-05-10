@@ -1,7 +1,6 @@
 <?php
     // Inclusion des fichiers nécessaires
-    require_once './includes/web.inc.all.php';
-    require_once ROOT.'includes/checkAll.php';
+    require_once './includes/checkAll.php';
 
     // Vérifie si la session de l'utilisateur est valide, si oui, redirige vers la page d'accueil
     if (ESessiontManager::IsValid() === true)
