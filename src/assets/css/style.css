@@ -5,10 +5,19 @@ main
 
 #errorMsg
 {
-    color: orange;
     font-weight: 600;
     font-size: large;
     text-align: center;
+}
+
+#error
+{
+    color: #FFC107;
+}
+
+#success
+{
+    color: #28A745;
 }
 
 h2

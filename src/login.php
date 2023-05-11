@@ -29,7 +29,7 @@
         else
         {
             // Affiche un message d'erreur
-            $msg = "<i class='fa-solid fa-triangle-exclamation fa-xl me-2'></i> Email ou mot de passe incorrecte.";
+            $msg = "<p id='error'><i class='fa-solid fa-triangle-exclamation fa-xl me-2'></i> Email ou mot de passe incorrecte.</p>";
         }
     }
 ?>

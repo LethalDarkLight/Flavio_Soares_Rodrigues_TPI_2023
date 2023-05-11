@@ -1,7 +1,9 @@
 <?php
     // Inclusion des fichiers nécessaires
     require_once './includes/checkAll.php';
-    require_once ROOT. 'tools/registerTools.php';
+    require_once ROOT.'tools/registerTools.php';
+
+    require_once ROOT.'includes/mailer.php';
 
     // Vérifie si la session de l'utilisateur est valide, si oui, redirige vers la page d'accueil
     if (ESessiontManager::IsValid() === true)
@@ -17,7 +19,6 @@
     $address2 = "";
     $city = 0;
     $zipCode = "";
-
     $email = "";
     $password = "";
 
@@ -40,8 +41,8 @@
         if (EmailExists($email))
         {
             // Affiche un message d'erreur
-            $msg = "<i class='fa-solid fa-triangle-exclamation fa-xl me-2'></i>
-            L'email est déjà utilisé. <a class='card-link text-decoration-none' href='login.php'>Connectez-vous</a>";
+            $msg = "<p id='error'><i class='fa-solid fa-triangle-exclamation fa-xl me-2'></i>
+            L'email est déjà utilisé.<a class='card-link text-decoration-none' href='login.php'> Connectez-vous</a></p>";
         }
         else
         {
@@ -52,6 +53,30 @@
             RegisterUser($name, $surname, $email, $passwordHashed, $gender, $address1, $address2, $city, $zipCode);
 
             // Envois d'un mail à l'utilisateur
+            $mailTitle = "Confirmation de la création de votre compte GYM";
+            $mailBody ="
+            <div style='font-size: 16px; color: black'>
+                <p>Vous êtes bien enregistré sur le site GYM.</p>
+                <p>Vous pouvez dès maintenant commander les articles que vous souhaitez.</p>
+                <p>Heureux de vous avoir comme utilisateur,</p>
+                <p style='font-weight: bold; color: #0B5ED7; font-size: 18px;'>L'équipe GYM</p>
+            </div>";
+
+            sendEmail($email, $mailTitle, $mailBody);
+
+            $msg = "<p id='success'> Votre compte à été créer. Un email de confirmation vous a été envoyer. 
+                <a class='card-link text-decoration-none' href='login.php'> Connectez-vous</a></p>";
+
+            // Vide toutes les valeurs du formulaire
+            $name = "";
+            $surname = "";
+            $gender = 0;
+            $address1 = "";
+            $address2 = "";
+            $city = 0;
+            $zipCode = "";
+            $email = "";
+            $password = "";
         }
     }
 ?>

@@ -8,7 +8,7 @@ require_once ROOT. 'tools/addArticleTools.php';
 
 // Initialisation des variables    
 $name = "";
-//$description = "";
+$description = "";
 $price = 0;
 $category = 0;
 $stock = 0;
@@ -25,31 +25,39 @@ if (isset($_POST['submit']))
     $stock = intval(filter_input(INPUT_POST, "stock", FILTER_VALIDATE_INT));                    // Stock
     $featured = isset($_POST['featured']) ? 1 : 0;                                              // Mis en avant
 
+    // Si l'article existe on affiche un message d'erreur
     if (ArticleExists($name))
     {
         // Affiche un message d'erreur
-        $msg = "<i class='fa-solid fa-triangle-exclamation fa-xl me-2'></i> Cet article existe déjà";
+        $msg = "<p id='error'><i class='fa-solid fa-triangle-exclamation fa-xl me-2'></i> Cet article existe déjà</p>";
     }
     else
     {
-        $files = $_FILES['files']; // Images
-        $description = htmlspecialchars_decode($description); // Récupère au format HTML la description
+        $files = $_FILES['files'];                                              // Récupère les images
+        //$description = htmlspecialchars_decode($description);                   // Récupère au format HTML la description
 
         AddArticle($name, $description, $price, $stock, $featured, $category);  // Ajoute un article
-        $articleId = GetArticle($name)->id;                                     // récupère l'id de l'article qui vien d'être créer
+        $articleId = GetArticle($name)->id;                                     // Récupère l'id de l'article qui vien d'être créer
 
         // Permet de vérifier que $_FILES contient un fichier
-        /*if ($files['name'][0] != "")
+        if (!empty($files['name'][0]))
         {
             // Parcours l'ensemble des fichiers
             for ($i = 0; $i < count($files['name']); $i++)
             {
-                $fileName = uniqid();                                                   // Nom du fichier (unique)
-                $fileContent = file_get_contents($files["tmp_name"][$i]);               // Contenu de l'image
-                $fileType = $files['type'][$i];                                         // Type de fichier
-                AddEnc64Image($content, $fileName, $fileType, $mainImage, $articlesId); // Ajoute les images
+                $fileName = uniqid();                                       // Nom du fichier (unique)
+                $fileContent = file_get_contents($files["tmp_name"][$i]);   // Contenu de l'image
+                $fileType = $files['type'][$i];                             // Type de fichier
+
+                // Image principale (true pour la première insertion) puis false
+                $mainImage = ($i === 0);
+                
+                // Ajoute les images
+                AddEnc64Image($fileContent, $fileName, $fileType, intval($mainImage), $articleId);
             }
-        }*/
+        }
+
+        $msg = "<p id='success'>L'article à été ajouté avec success</p>";
     }
 }
 ?>

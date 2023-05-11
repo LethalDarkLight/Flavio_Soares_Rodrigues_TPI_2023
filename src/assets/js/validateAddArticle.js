@@ -1,10 +1,8 @@
 function validateForm()
 {
     // Saisie de l'utilisateur
-    let name = document.getElementById("name");                 // Récupère le nom
-    //let description = document.getElementById("description");   // Récupère la description
-
-    let description = tinymce.get("description").getContent();
+    let name = document.getElementById("name");                 // Récupère le nom 
+    let description = tinymce.get("description").getContent();  // Récupère la description
     let price = document.getElementById("price");               // Récupère le prix
     let image = document.getElementById("image");               // Récupère les images
     let category = document.getElementById("categories");       // Récupère la categorie

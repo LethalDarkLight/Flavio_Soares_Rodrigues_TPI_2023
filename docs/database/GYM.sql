@@ -22,7 +22,8 @@ SET time_zone = "+00:00";
 -- Base de données : `GYM`
 --
 
-CREATE DATABASE IF NOT EXISTS GYM;
+CREATE DATABASE IF NOT EXISTS `GYM` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+USE `GYM`;
 
 -- --------------------------------------------------------
 
@@ -41,24 +42,6 @@ CREATE TABLE `ARTICLES` (
   `UPDATE_DATE` timestamp NULL DEFAULT NULL,
   `CATEGORIES_ID` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
-
---
--- Déchargement des données de la table `ARTICLES`
---
-
-INSERT INTO `ARTICLES` (`ID`, `NAME`, `DESCRIPTION`, `PRICE`, `STOCK`, `FEATURED`, `CREATION_DATE`, `UPDATE_DATE`, `CATEGORIES_ID`) VALUES
-(1, 'Kettlebell', 'La kettlebell est un poids traditionnel russe qui est munie d\'une poignée de prise fixe.', 39.9, 10, 1, '2023-05-08 05:44:48', NULL, 4),
-(14, 'KetterBel', 'La kettlebell est un poids traditionnel russe qui est munie d\'une poignée de prise fixe.', 39.9, 10, 1, '2023-05-08 06:12:37', NULL, 4),
-(15, 'KetterBe', 'La kettlebell est un poids traditionnel russe qui est munie d\'une poignée de prise fixe.', 39.9, 10, 1, '2023-05-08 06:12:42', NULL, 4),
-(16, 'KetterB', 'La kettlebell est un poids traditionnel russe qui est munie d\'une poignée de prise fixe.', 39.9, 10, 1, '2023-05-08 06:12:46', NULL, 4),
-(17, 'Ketter', 'La kettlebell est un poids traditionnel russe qui est munie d\'une poignée de prise fixe.', 39.9, 10, 1, '2023-05-08 06:12:50', NULL, 4),
-(18, 'Kette', 'La kettlebell est un poids traditionnel russe qui est munie d\'une poignée de prise fixe.', 39.9, 10, 1, '2023-05-08 06:12:59', NULL, 4),
-(19, 'Kett', 'La kettlebell est un poids traditionnel russe qui est munie d\'une poignée de prise fixe.', 39.9, 10, 1, '2023-05-08 06:13:03', NULL, 4),
-(20, 'Ket', 'La kettlebell est un poids traditionnel russe qui est munie d\'une poignée de prise fixe.', 39.9, 10, 1, '2023-05-08 06:13:06', NULL, 4),
-(21, 'Ke', 'La kettlebell est un poids traditionnel russe qui est munie d\'une poignée de prise fixe.', 39.9, 10, 1, '2023-05-08 06:13:10', NULL, 4),
-(22, 'K', 'La kettlebell est un poids traditionnel russe qui est munie d\'une poignée de prise fixe.', 39.9, 10, 1, '2023-05-08 06:13:13', NULL, 4),
-(23, 'Kdfsds', 'La kettlebell est un poids traditionnel russe qui est munie d\'une poignée de prise fixe.', 39.9, 10, 1, '2023-05-08 06:13:16', NULL, 4),
-(24, 'Hack squat', 'L’équipement parfait pour le développement du bas du corps. Maximisez les bénéfices des squats avec Hack Squat', 6999.95, 3, 0, '2023-05-08 09:27:57', NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -1406,7 +1389,7 @@ CREATE TABLE `USERS` (
 --
 
 INSERT INTO `USERS` (`ID`, `NAME`, `SURNAME`, `EMAIL`, `PASSWORD`, `GENDER`, `ADDRESS1`, `ADDRESS2`, `CITIES_ID`, `ZIP_CODE`, `IS_ADMIN`) VALUES
-(1, 'Soares Rodrigues', 'Flavio', 'admin@gym.ch', '$2y$10$qEZkeOED5SkjHWpkmno/r.Gkhu/7AEB0yByg9DadB3XzbHLmDTYrK', 1, 'Grand-Montfleury', '', 93, '1290', 1),;
+(1, 'Soares Rodrigues', 'Flavio', 'admin@gym.ch', '$2y$10$qEZkeOED5SkjHWpkmno/r.Gkhu/7AEB0yByg9DadB3XzbHLmDTYrK', 1, 'Grand-Montfleury', '', 93, '1290', 1);
 
 --
 -- Index pour les tables déchargées
