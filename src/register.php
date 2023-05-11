@@ -2,6 +2,7 @@
     // Inclusion des fichiers nécessaires
     require_once './includes/checkAll.php';
     require_once ROOT.'tools/registerTools.php';
+    require_once ROOT.'includes/nav.php';
 
     require_once ROOT.'includes/mailer.php';
 
@@ -102,6 +103,7 @@
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
+    <?=ShowNavbar()?>
     <main class="mx-auto mt-5">
         <h2 class="mb-5">Inscription</h2>
         <div class="my-3" id='errorMsg' role='alert'><?=$msg?></div>

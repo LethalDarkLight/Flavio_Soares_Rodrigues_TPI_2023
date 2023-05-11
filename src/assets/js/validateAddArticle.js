@@ -1,8 +1,10 @@
+let featured = document.getElementById("featured");
+
 function validateForm()
 {
     // Saisie de l'utilisateur
     let name = document.getElementById("name");                 // Récupère le nom 
-    let description = tinymce.get("description").getContent();  // Récupère la description
+    let description = tinymce.get("description").getContent();   // Récupère la description
     let price = document.getElementById("price");               // Récupère le prix
     let image = document.getElementById("image");               // Récupère les images
     let category = document.getElementById("categories");       // Récupère la categorie
@@ -72,11 +74,11 @@ function validateForm()
     }
 
     // Vérification de la description
-    if (description.value.length < 10)
+    if (description.length < 10)
     {
         // Affiche un message d'erreur
         descriptionErrorMsg.innerText = "La description doit contenir au moins 10 caractères.";
-        description.focus();
+        tinymce.get("description").focus(); // Définit le focus sur le champ de texte
     }
     else
     {
@@ -113,7 +115,6 @@ function validateForm()
     }
 }
 
-let featured = document.getElementById("featured");
 function toggleCheckboxValue(featured)
 {
     if (featured.checked)

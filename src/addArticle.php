@@ -4,7 +4,9 @@ $REQUIREDLOGIN = true;
 $REQUIREDADMIN = true;
 
 require_once './includes/checkAll.php';
+require_once ROOT.'includes/nav.php';
 require_once ROOT. 'tools/addArticleTools.php';
+
 
 // Initialisation des variables    
 $name = "";
@@ -33,31 +35,32 @@ if (isset($_POST['submit']))
     }
     else
     {
-        $files = $_FILES['files'];                                              // Récupère les images
-        //$description = htmlspecialchars_decode($description);                   // Récupère au format HTML la description
+        $files = $_FILES['files']; // Récupère les images
 
-        AddArticle($name, $description, $price, $stock, $featured, $category);  // Ajoute un article
-        $articleId = GetArticle($name)->id;                                     // Récupère l'id de l'article qui vien d'être créer
-
-        // Permet de vérifier que $_FILES contient un fichier
-        if (!empty($files['name'][0]))
+        // Ajoute un article
+        if (AddArticle($name, $description, $price, $stock, $featured, $category))
         {
-            // Parcours l'ensemble des fichiers
-            for ($i = 0; $i < count($files['name']); $i++)
+            $articleId = GetArticle($name)->id; // Récupère l'id de l'article qui vien d'être créer
+            
+            // Permet de vérifier que $_FILES contient un fichier
+            if (!empty($files['name'][0]))
             {
-                $fileName = uniqid();                                       // Nom du fichier (unique)
-                $fileContent = file_get_contents($files["tmp_name"][$i]);   // Contenu de l'image
-                $fileType = $files['type'][$i];                             // Type de fichier
+                // Parcours l'ensemble des fichiers
+                for ($i = 0; $i < count($files['name']); $i++)
+                {
+                    $fileName = uniqid();                                       // Nom du fichier (unique)
+                    $fileContent = file_get_contents($files["tmp_name"][$i]);   // Contenu de l'image
+                    $fileType = $files['type'][$i];                             // Type de fichier
 
-                // Image principale (true pour la première insertion) puis false
-                $mainImage = ($i === 0);
-                
-                // Ajoute les images
-                AddEnc64Image($fileContent, $fileName, $fileType, intval($mainImage), $articleId);
+                    // Image principale (true pour la première insertion) puis false
+                    $mainImage = ($i === 0);
+                    
+                    // Ajoute les images
+                    AddEnc64Image($fileContent, $fileName, $fileType, intval($mainImage), $articleId);
+                }
+                $msg = "<p id='success'>L'article à été ajouté avec success</p>";
             }
         }
-
-        $msg = "<p id='success'>L'article à été ajouté avec success</p>";
     }
 }
 ?>
@@ -82,65 +85,66 @@ if (isset($_POST['submit']))
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
-<main class="mx-auto mt-5">
-    <h2 class="mb-5">Ajouter un article</h2>
-    <div class="my-3" id='errorMsg' role='alert'><?=$msg?></div>
+    <?=ShowNavbar()?>
+    <main class="mx-auto mt-5">
+        <h2 class="mb-5">Ajouter un article</h2>
+        <div class="my-3" id='errorMsg' role='alert'><?=$msg?></div>
 
-    <form method="post" onsubmit="return validateForm()" enctype="multipart/form-data">
+        <form method="post" onsubmit="return validateForm()" enctype="multipart/form-data">
 
-        <div class="my-4">
-            <label for="name" class="form-label">Nom de l'article <i class="fa-sharp fa-solid fa-star-of-life text-primary"></i></label>
-            <input type="text" id="name" class="form-control" name="name">
-            <div id="nameHelp" class="form-text text-danger"></div>
-        </div>
+            <div class="my-4">
+                <label for="name" class="form-label">Nom de l'article <i class="fa-sharp fa-solid fa-star-of-life text-primary"></i></label>
+                <input type="text" name="name" id="name" class="form-control">
+                <div id="nameHelp" class="form-text text-danger"></div>
+            </div>
 
-        <div class="my-4">
-            <label for="description" class="form-label">Description <i class="fa-sharp fa-solid fa-star-of-life text-primary"></i></label>
-            <textarea id="description" name="description"></textarea>
-            <div id="descriptionHelp" class="form-text text-danger"></div>
-        </div>
+            <div class="my-4">
+                <label for="description" class="form-label">Description <i class="fa-sharp fa-solid fa-star-of-life text-primary"></i></label>
+                <textarea id="description" name="description"></textarea>
+                <div id="descriptionHelp" class="form-text text-danger"></div>
+            </div>
 
-        <div class="my-4">
-            <label for="price" class="form-label">Prix <i class="fa-sharp fa-solid fa-star-of-life text-primary"></i></label>
-            <input type="number" id="price" class="form-control" name="price" step="0.05" min="0">
-            <div id="priceHelp" class="form-text text-danger"></div>
-        </div>
+            <div class="my-4">
+                <label for="price" class="form-label">Prix <i class="fa-sharp fa-solid fa-star-of-life text-primary"></i></label>
+                <input type="number" id="price" class="form-control" name="price" step="0.05" min="0">
+                <div id="priceHelp" class="form-text text-danger"></div>
+            </div>
 
-        <div class="my-4">
-            <label for="image" class="form-label">Image <i class="fa-sharp fa-solid fa-star-of-life text-primary"></i></label>
-            <input type="file" id="image" name="files[]" class="form-control" accept="image/*" multiple>
-            <div id="imageHelp" class="form-text text-danger"></div>
-        </div>
+            <div class="my-4">
+                <label for="image" class="form-label">Image <i class="fa-sharp fa-solid fa-star-of-life text-primary"></i></label>
+                <input type="file" id="image" name="files[]" class="form-control" accept="image/*" multiple>
+                <div id="imageHelp" class="form-text text-danger"></div>
+            </div>
 
-        <div class="my-4">
-            <label for="categories" class="form-label">Catégorie <i class="fa-sharp fa-solid fa-star-of-life text-primary"></i></label>
-            <select id="categories" class="form-select" name="categories">
-                <option value="0" selected>---</option>
-                <?=ShowCategories($category)?>
-            </select>
-            <div id="categoryHelp" class="form-text text-danger"></div>
-        </div>
+            <div class="my-4">
+                <label for="categories" class="form-label">Catégorie <i class="fa-sharp fa-solid fa-star-of-life text-primary"></i></label>
+                <select id="categories" class="form-select" name="categories">
+                    <option value="0" selected>---</option>
+                    <?=ShowCategories($category)?>
+                </select>
+                <div id="categoryHelp" class="form-text text-danger"></div>
+            </div>
 
-        <div class="my-4">
-            <label for="stock" class="form-label">Quantité en stock <i class="fa-sharp fa-solid fa-star-of-life text-primary"></i></label>
-            <input type="number" id="stock" class="form-control" name="stock" min="0">
-            <div id="stockHelp" class="form-text text-danger"></div>
-        </div>
+            <div class="my-4">
+                <label for="stock" class="form-label">Quantité en stock <i class="fa-sharp fa-solid fa-star-of-life text-primary"></i></label>
+                <input type="number" id="stock" class="form-control" name="stock" min="0">
+                <div id="stockHelp" class="form-text text-danger"></div>
+            </div>
 
-        <div class="my-4">
-            <label for="featured" class="form-check-label">Mise en avant </i></label>
-            <input type="checkbox" id="featured" class="form-check-input" name="featured">
-        </div>
+            <div class="my-4">
+                <label for="featured" class="form-check-label">Mise en avant </i></label>
+                <input type="checkbox" id="featured" class="form-check-input" name="featured">
+            </div>
 
-        <div class="my-4">
-            <input name="submit" type="submit" class="btn btn-primary submitBtn mb-3" value="Valider">
-        </div>
-    </form>
-</main>
+            <div class="my-4">
+                <input name="submit" type="submit" class="btn btn-primary submitBtn mb-3" value="Valider">
+            </div>
+        </form>
+    </main>
 
-<script src="./assets/js/validateAddArticle.js"></script>
 <script src="./assets/libraries/tinyMCE/tinymce/tinymce.min.js"></script>
 <script src="./assets/libraries/tinyMCE/parametreTinymce.js"></script>
+<script src="./assets/js/validateAddArticle.js"></script>
 <script src="./assets/libraries/bootstrap/bootstrap.js"></script>
 
 </body>
