@@ -157,7 +157,7 @@ function LoginUser($email, $password)
         if (password_verify($password, $user->password))
         {
             // Créer une session avec l'utilisateur
-            ESessiontManager::SetUser($user->id, $user->isAdmin);
+            ESessionManager::SetUser($user->id, $user->isAdmin);
 
             // Retourne true si tout c'est bien passé
             return true;

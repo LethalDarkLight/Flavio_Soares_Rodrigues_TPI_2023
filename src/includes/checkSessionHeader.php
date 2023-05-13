@@ -1,7 +1,7 @@
 <?php
 
 // Si la session n'est pas valide (utilisateur pas connecté) on le renvois à la page de login
-if (ESessiontManager::IsValid() === false)
+if (ESessionManager::IsValid() === false)
 {
 	header("Location: login.php");
 	exit();
@@ -11,7 +11,7 @@ if (ESessiontManager::IsValid() === false)
 if (isset($REQUIREDADMIN) && $REQUIREDADMIN === true)
 {
 	// Si l'utilisateur n'est pas admin on le redirige 
-	if (ESessiontManager::IsConnectedUserAdmin() === false)
+	if (ESessionManager::IsConnectedUserAdmin() === false)
 	{
 		header("Location: unauthorized.php");
 		exit();

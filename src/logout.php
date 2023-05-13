@@ -5,7 +5,7 @@
 require_once './includes/checkAll.php';
 
 // Supprime la session
-ESessiontManager::Clear();
+ESessionManager::Clear();
 
 // Redirection vers la page de login
 header("Location: login.php");

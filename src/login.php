@@ -4,7 +4,7 @@
     require_once ROOT.'includes/nav.php';
 
     // Vérifie si la session de l'utilisateur est valide, si oui, redirige vers la page d'accueil
-    if (ESessiontManager::IsValid() === true)
+    if (ESessionManager::IsValid() === true)
     {
         header("Location: index.php");
         exit();

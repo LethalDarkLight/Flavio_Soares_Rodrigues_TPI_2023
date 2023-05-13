@@ -10,7 +10,7 @@ require_once ROOT.'session/SecureSession.php';
  * @author 	dominique.aigroz@kadeo.net
  * @remark
  */
-class ESessiontManager {
+class ESessionManager {
 	private static $objInstance;
 	private $sessionInstance;
 	/**
@@ -28,7 +28,7 @@ class ESessiontManager {
 	 */
 	public static function getInstance() {
 		if(!self::$objInstance){
-			self::$objInstance = new ESessiontManager();
+			self::$objInstance = new ESessionManager();
 			ini_set('session.save_handler', 'files');
 			session_save_path(ROOT.ESES_DATAFOLDER);
 			self::$objInstance->sessionInstance = new ESession(ESES_KEY);
@@ -36,7 +36,7 @@ class ESessiontManager {
 			if (!self::$objInstance->sessionInstance->isValid()) {
 				self::$objInstance->sessionInstance->forget();
 			}
-				
+	
 		}
 		return self::$objInstance;
 	} # end method

@@ -49,37 +49,46 @@ h2
 
 .filterControl
 {
-    width: 200px;
+    width: 100%;
 }
 
 .search
 {
-    width: 800px;
+    width: 100%;
 }
 
-@media screen and (max-width: 1900px)
+.filterContainer
 {
-    .filterControl
-    {
-        width: 180px;
-    }
-
-    .search
-    {
-        width: 500px;
-    }
+    width: 100%;
 }
 
-@media screen and (max-width: 1600px)
+.filterBtn
 {
-    .filterControl
+    width: 100%;
+}
+
+.navigationBtn
+{
+    width: 100%;
+}
+
+/*xxl*/
+@media screen and (max-width: 1400px)
+{
+    .nav-item
     {
-        width: 180px;
+        padding-right: 15px;
     }
 
-    .search
+    .filterControl
     {
-        width: 300px;
+        
+        margin-top: 8px;
+    }
+
+    #eraserFilterBtn
+    {
+        margin-bottom: 10px;
     }
 }
 
@@ -89,43 +98,18 @@ h2
     {
       width: 65%;
     }
-
-    .filterControl
-    {
-        width: 150px;
-    }
-
-    .search
-    {
-        width: 250px;
-    }
 }
 
 @media screen and (max-width: 992px)
 {
     main
     {
-      width: 80%;
-    }
-
-    .filterControl
-    {
-        width: 100%;
-        margin-top: 5px;
-    }
-
-    .search
-    {
-        width: 100%;
-    }
-    
-    .navigationBtn
-    {
-        width: 100%;
+      width: 90%;
     }
 }
 
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 600px)
+{
     main
     {
         width: 100%;
