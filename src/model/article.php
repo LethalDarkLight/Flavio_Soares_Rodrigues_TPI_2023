@@ -86,6 +86,49 @@ function GetArticle($name)
 }
 
 /**
+ * Récupère un article grâce à son ID donné en paramètre
+ * @param int $id l'identifiant unique de l'article
+ * @return mixed L'article récupéré sous forme d'objet Article, ou false si une erreur est survenue
+ */
+function GetArticleById($id)
+{
+    // Requête SQL qui récupère les données de l'article
+    $sql = "SELECT `ID`, `NAME`, `DESCRIPTION`, `PRICE`, `STOCK`, `FEATURED`, `CREATION_DATE`, `UPDATE_DATE`, `CATEGORIES_ID`
+    FROM `ARTICLES`
+    WHERE `ID` = :id";
+
+    // Prépare la requête SQL
+    $statement = EDatabase::prepare($sql);
+
+    try
+    {
+        // Exécute la requête SQL en utilisant l'ID passé en paramètre
+        $statement->execute(array(":id" => $id));
+
+        // Récupère la première ligne de résultat
+        $row = $statement->fetch(PDO::FETCH_ASSOC, PDO::FETCH_ORI_NEXT);
+
+        // Crée un objet Article à partir des données récupérées
+        return new Article(
+            intval($row['ID']),                 // ID            : l'identifiant unique de l'article (entier)
+            $row['NAME'],                       // NAME          : le nom de l'article (chaîne de caractères)
+            $row['DESCRIPTION'],                // DESCRIPTION   : la description de l'article (chaîne de caractères)
+            doubleval($row['PRICE']),           // PRICE         : le prix de l'article (nombre à virgule flottante)
+            intval($row['STOCK']),              // STOCK         : la quantité en stock de l'article (entier)
+            intval($row['FEATURED']),           // FEATURED      : un booléen qui indique si l'article est à la une ou non (entier converti en booléen)
+            new DateTime($row['CREATION_DATE']),// CREATION_DATE : la date de création de l'article (objet DateTime)
+            new DateTime($row['UPDATE_DATE']),  // UPDATE_DATE   : la date de mise à jour de l'article (objet DateTime)
+            intval($row['CATEGORIES_ID'])       // CATEGORIES_ID : l'ID de la catégorie à laquelle appartient l'article (entier)
+        );
+    }
+    catch (PDOException $e)
+    {
+        // En cas d'erreur, retourne false
+        return false;
+    }
+}
+
+/**
  * Cette fonction récupère les 10 articles mis à la une les plus récent
  * dans la base de données et retourne un tableau d'objets Article.
  *

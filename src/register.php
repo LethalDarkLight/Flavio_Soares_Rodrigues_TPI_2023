@@ -2,9 +2,6 @@
     // Inclusion des fichiers nécessaires
     require_once './includes/checkAll.php';
     require_once ROOT.'tools/registerTools.php';
-    require_once ROOT.'includes/nav.php';
-
-    require_once ROOT.'includes/mailer.php';
 
     // Vérifie si la session de l'utilisateur est valide, si oui, redirige vers la page d'accueil
     if (ESessionManager::IsValid() === true)

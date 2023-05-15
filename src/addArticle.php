@@ -4,9 +4,7 @@ $REQUIREDLOGIN = true;
 $REQUIREDADMIN = true;
 
 require_once './includes/checkAll.php';
-require_once ROOT.'includes/nav.php';
 require_once ROOT. 'tools/addArticleTools.php';
-
 
 // Initialisation des variables    
 $name = "";

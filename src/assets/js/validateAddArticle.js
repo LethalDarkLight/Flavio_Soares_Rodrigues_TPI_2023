@@ -1,5 +1,6 @@
 let featured = document.getElementById("featured");
 
+// Permet de valider les entrer dans le formulaire
 function validateForm()
 {
     // Saisie de l'utilisateur
@@ -115,6 +116,7 @@ function validateForm()
     }
 }
 
+// Regarde la valeur de la check box et change la valeur de featured
 function toggleCheckboxValue(featured)
 {
     if (featured.checked)

@@ -1,10 +1,9 @@
 <?php
     // Inclusion des fichiers nécessaires
     require_once './includes/checkAll.php';
-    require_once ROOT.'includes/nav.php';
 
     // Vérifie si la session de l'utilisateur est valide, si oui, redirige vers la page d'accueil
-    if (ESessionManager::IsValid() === true)
+    if (ESessionManager::IsValid() == true)
     {
         header("Location: index.php");
         exit();
@@ -83,12 +82,13 @@
                 <button name="submit" type="submit" class="btn btn-primary submitBtn mb-3" value="login">Se connecter</button>
             </div>
         </form>
-        <div class="text-center mt-2 card card-body">
+        <div class="text-center mt-2 mb-4 card card-body">
             <h6 class="card-subtitle mb-2"> Vous êtes nouveau sur GYM ?</h6>
                 <a class="card-link text-decoration-none" href="register.php">Inscrivez-vous</a>
         </div>
     </main>
     <script src="./assets/js/validateEmail.js"></script>
     <script src="./assets/js/validateLogin.js"></script>
+    <script src="./assets/libraries/bootstrap/bootstrap.js"></script>
 </body>
 </html>

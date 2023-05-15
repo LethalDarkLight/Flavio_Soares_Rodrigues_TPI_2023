@@ -1,10 +1,32 @@
 <?php
+
+if (!isset($_GET['articleName']))
+{ 
+    header("Location: index.php");
+	exit();
+}
+
 // Inclusion des fichiers nécessaires
 require_once './includes/checkAll.php';
-require_once ROOT.'tools/indexTools.php';
+require_once ROOT.'tools/articleDetailsTools.php';
+
+// Récupère tous les articles mis en vedette
+$article = GetArticle($_GET['articleName']);
+$msg = "";
+
+if (isset($_POST['addToCart']))
+{
+    if(AddCartItem(ESessionManager::GetConnectedUserId(), $article->id))
+    {
+        $msg = "<p id='success'>L'article à été ajouter au panier</p>";
+    }
+}
+else
+{
+    $msg = "";
+}
 
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -27,12 +49,12 @@ require_once ROOT.'tools/indexTools.php';
 </head>
 <body>
     <?=ShowNavbar()?>
-    <main class="w-100 mt-3">
-        <h2 class="mb-4">Nos articles à la une</h2>
-        <div class="d-flex flex-wrap justify-content-center mx-auto">
-            <?=ShowFeaturedArticles()?>
+    <main class="w-100 mt-5">
+        <div class="my-3" id='errorMsg' role='alert'><?=$msg?></div>
+        <div class="d-flex justify-content-center mx-auto">
+            <?=ShowArticleDetails($article)?>
         </div>
     </main>
-<script src="./assets/libraries/bootstrap/bootstrap.js"></script>
+    <script src="./assets/libraries/bootstrap/bootstrap.js"></script>
 </body>
 </html>

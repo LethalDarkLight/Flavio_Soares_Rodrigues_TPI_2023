@@ -26,17 +26,19 @@ class ESessionManager {
 	 * @brief	Returns the session instance
 	 * @return $objInstance;
 	 */
-	public static function getInstance() {
-		if(!self::$objInstance){
+	public static function getInstance()
+	{
+		if(!self::$objInstance)
+		{
 			self::$objInstance = new ESessionManager();
 			ini_set('session.save_handler', 'files');
 			session_save_path(ROOT.ESES_DATAFOLDER);
+
 			self::$objInstance->sessionInstance = new ESession(ESES_KEY);
 			// Test if valid
 			if (!self::$objInstance->sessionInstance->isValid()) {
 				self::$objInstance->sessionInstance->forget();
 			}
-	
 		}
 		return self::$objInstance;
 	} # end method
@@ -49,8 +51,8 @@ class ESessionManager {
 		$Instance = self::getInstance();
 		
 		if ($Instance && $Instance->sessionInstance && $Instance->sessionInstance->isValid()){
-			if ($Instance->sessionInstance->get(ESES_USERID) != null &&	
-				$Instance->sessionInstance->get(ESES_ISADMIN) != null)
+			if ($Instance->sessionInstance->get(ESES_USERID) !== null &&	
+				$Instance->sessionInstance->get(ESES_ISADMIN) !== null)
 				return true;
 		}
 		return false;
@@ -76,7 +78,8 @@ class ESessionManager {
 	public static function GetConnectedUserId(){
 		$Instance = self::getInstance();
 	
-		if ($Instance && $Instance->sessionInstance && $Instance->sessionInstance->isValid()){
+		if ($Instance && $Instance->sessionInstance && $Instance->sessionInstance->isValid())
+		{
 			$id = $Instance->sessionInstance->get(ESES_USERID);
 			if ($id)
 				return $id;
@@ -88,13 +91,18 @@ class ESessionManager {
 	 * Is the connected user admin
 	 * @return boolean True if admin, otherwise false.
 	 */
-	public static function IsConnectedUserAdmin(){
+	public static function IsConnectedUserAdmin()
+	{
 		$Instance = self::getInstance();
 	
-		if ($Instance && $Instance->sessionInstance && $Instance->sessionInstance->isValid()){
+		if ($Instance && $Instance->sessionInstance && $Instance->sessionInstance->isValid())
+		{
 			$isAdmin = $Instance->sessionInstance->get(ESES_ISADMIN);
+
 			if ($isAdmin)
+			{
 				return $isAdmin;
+			}
 		}
 		return false;
 	} # end method

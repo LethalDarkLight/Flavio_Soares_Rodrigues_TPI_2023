@@ -10,20 +10,19 @@ function ShowNavbar()
     // Récupère toutes les catégories
     $categories = GetCategories();
 
-    if (isset($_GET['filterSubmit']))
+    if (isset($_GET['filterSubmit']) && $_GET['filterSubmit'] == "submit")
     {
         $searchFilter = filter_input(INPUT_GET, "searchFilter", FILTER_SANITIZE_SPECIAL_CHARS);
         $categoriesFilter = intval(filter_input(INPUT_GET, "categoriesFilter", FILTER_VALIDATE_INT));
         $minPriceFilter = filter_input(INPUT_GET, "minPriceFilter", FILTER_VALIDATE_INT);
         $maxPriceFilter = filter_input(INPUT_GET, "maxPriceFilter", FILTER_VALIDATE_INT);
     }
-
-    if (isset($_GET['filterErase']))
+    else if (isset($_GET['filterSubmit']) && $_GET['filterSubmit'] == "eraser")
     {
-        $searchFilter = "";
-        $categoriesFilter = 0;
-        $minPriceFilter = "";
-        $maxPriceFilter = "";
+        $_GET['searchFilter'] = "";
+        $_GET['categoriesFilter'] = 0;
+        $_GET['minPriceFilter'] = "";
+        $_GET['maxPriceFilter'] = "";
     }
 
     $result = "
@@ -37,7 +36,7 @@ function ShowNavbar()
                 <div class='d-flex flex-column w-100'>
                     <div class='collapse navbar-collapse my-2 w-100' id='navbarSupportedContent'>";
 
-                        if (ESessionManager::IsValid() === false)
+                        if (!ESessionManager::IsValid())
                         {
                             $result .= "
                             <ul class='navbar-nav ms-auto mb-lg-0 d-flex w-100'>
@@ -49,8 +48,8 @@ function ShowNavbar()
                                 </li>
                             </ul>";
                         }
-
-                        if (ESessionManager::IsValid() === true && ESessionManager::IsConnectedUserAdmin() === false)
+                        else
+                        if (ESessionManager::IsConnectedUserAdmin() === false)
                         {
                             $result .= "
                             <ul class='navbar-nav ms-auto mb-lg-0 d-flex w-100'>
@@ -62,8 +61,7 @@ function ShowNavbar()
                                 </li>
                             </ul>";
                         }
-
-                        if (ESessionManager::IsValid() === true && ESessionManager::IsConnectedUserAdmin() === true)
+                        else
                         {
                             $result .= "
                             <ul class='navbar-nav ms-auto mb-lg-0 d-flex w-100'>
@@ -85,7 +83,7 @@ function ShowNavbar()
                     $result .= "</div>
                     <div class='collapse navbar-collapse border-top border-3 border-white ms-2 me-2 rounded my-1' id='navbarSupportedContent'></div>
                     <div class='collapse navbar-collapse my-2 w-100' id='navbarSupportedContent'>
-                        <form method='get' class='form-inline w-100'>
+                        <form method='get' action='search.php' class='form-inline w-100'>
                             <ul class='navbar-nav me-auto mb-lg-0 w-100'>
                                 <li class='nav-item mx-2 d-flex flex-row filterContainer'>
                                     <input class='form-control search' name='searchFilter' type='text' placeholder='Rechercher un article...' value='$searchFilter'>
@@ -113,10 +111,10 @@ function ShowNavbar()
                                     <input class='form-control filterControl' name='maxPriceFilter' type='number' placeholder='Prix max' min='0' value='$maxPriceFilter'>
                                 </li>
                                 <li class='nav-item mx-2 filterControl filterContainer'>
-                                    <button name='filterSubmit' class='btn btn-primary filterBtn' type='submit'><i class='fa-solid fa-magnifying-glass fa-lg'></i> Rechercher</button>
+                                    <button name='filterSubmit' class='btn btn-primary filterBtn' value='submit' type='submit'><i class='fa-solid fa-magnifying-glass fa-lg'></i> Rechercher</button>
                                 </li>
                                 <li class='nav-item mx-2 filterControl filterContainer'>
-                                    <button name='filterErase' class='btn btn-primary filterBtn' id='eraserFilterBtn' type='submit'><i class='fa-solid fa-eraser fa-lg'></i> Effacer les filtres</button>
+                                    <button name='filterSubmit' class='btn btn-primary filterBtn' id='eraserFilterBtn' value='eraser' type='submit'><i class='fa-solid fa-eraser fa-lg'></i> Effacer les filtres</button>
                                 </li>
                             </ul>
                         </form>

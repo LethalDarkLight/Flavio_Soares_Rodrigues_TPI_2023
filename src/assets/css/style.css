@@ -72,6 +72,16 @@ h2
     width: 100%;
 }
 
+.detailsBtn
+{
+    width: 25%;
+}
+
+.detailsImg
+{
+    width: 500px;
+}
+
 /*xxl*/
 @media screen and (max-width: 1400px)
 {
@@ -90,6 +100,11 @@ h2
     {
         margin-bottom: 10px;
     }
+
+    .detailsBtn
+    {
+        width: 40%;
+    }
 }
 
 @media screen and (max-width: 1200px)
@@ -97,6 +112,11 @@ h2
     main
     {
       width: 65%;
+    }
+
+    .detailsImg
+    {
+        width: 400px;
     }
 }
 
@@ -106,12 +126,27 @@ h2
     {
       width: 90%;
     }
+
+    .filteredArticle
+    {
+        width: 90%;
+    }
+
+    .detailsBtn
+    {
+        width: 65%;
+    }
 }
 
 @media screen and (max-width: 600px)
 {
     main
     {
-        width: 100%;
+        width: 95%;
+    }
+
+    .detailsImg
+    {
+        width: 300px;
     }
 }
