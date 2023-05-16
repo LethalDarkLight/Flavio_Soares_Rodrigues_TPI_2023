@@ -2,6 +2,13 @@
 require_once ROOT.'db/database.php';
 require_once ROOT.'containers/CartItem.php';
 
+/**
+ * Ajoute un article au panier d'un utilisateur ou augmente sa quantité de 1 s'il existe déjà.
+ *
+ * @param int $userId L'ID de l'utilisateur.
+ * @param int $articleId L'ID de l'article.
+ * @return bool Retourne true si l'article a été ajouté ou mis à jour avec succès, sinon false.
+ */
 function AddCartItem($userId, $articleId)
 {
     // Si l'article n'existe pas dans le panier on l'ajoute sinon on augmente sa quantité de 1
@@ -25,7 +32,7 @@ function AddCartItem($userId, $articleId)
     try
     {
         // Exécute la requête SQL pour ajouter un article dans le panier
-        $statement->execute(array(':userId' => $userId, 'articleId' => $articleId));
+        $statement->execute(array(':userId' => $userId, ':articleId' => $articleId));
     }
     catch (PDOException $e)
     {
@@ -83,14 +90,50 @@ function GetCartItems($userId)
 }
 
 /**
+ * Met à jour la quantité d'un article dans le panier d'un utilisateur.
+ *
+ * @param int $userId L'ID de l'utilisateur.
+ * @param int $articleId L'ID de l'article.
+ * @param int $quantity La nouvelle quantité de l'article.
+ * @return bool Retourne true si la mise à jour a été effectuée avec succès, sinon false.
+ */
+function UpdateQuantity($userId, $articleId, $quantity)
+{
+    // Requête SQL qui met à jour la quantité de l'article
+    $sql = "UPDATE CART_ITEMS
+    SET QUANTITY = :quantity
+    WHERE USERS_ID = :userId
+    AND ARTICLES_ID = :articleId";
+
+    // Prépare la requête SQL
+    $statement = EDatabase::prepare($sql);
+
+    try
+    {
+        // Exécute la requête SQL pour mettre à jour la quantité de l'article dans le panier
+        $statement->execute(array(':userId' => $userId, ':articleId' => $articleId, ':quantity' => $quantity));
+    }
+    catch (PDOException $e)
+    {
+        // En cas d'erreur, retourne false
+        return false;
+    }
+
+    // Retourne true si la mise à jour a été effectuée avec succès
+    return true;
+}
+
+/**
  * Supprime un article du panier en fonction de son ID.
+ *
+ * @param int $userId L'ID de l'utilisateur.
  * @param int $articleId L'ID de l'article à supprimer.
  * @return bool Retourne true si la suppression a été effectuée avec succès, sinon false.
  */
-function DeleteCartItem($articleId)
+function DeleteCartItem($userId, $articleId)
 {
     // Requête SQL qui supprime un article du panier en fonction de son ID
-    $sql = "DELETE FROM `CART_ITEMS` WHERE `ARTICLES_ID` = :articleId";
+    $sql = "DELETE FROM `CART_ITEMS` WHERE `ARTICLES_ID` = :articleId AND `USERS_ID` = :userId";
 
     // Prépare la requête SQL
     $statement = EDatabase::prepare($sql);
@@ -98,7 +141,7 @@ function DeleteCartItem($articleId)
     try
     {
         // Exécute la requête en passant l'ID de l'article en paramètre
-        $statement->execute(array(":articleId" => $articleId));
+        $statement->execute(array(":articleId" => $articleId, ":userId" => $userId));
 
         // Retourne true pour indiquer que la suppression a réussi
         return true;

@@ -16,7 +16,7 @@ require_once ROOT.'session/SessionManager.php';
  * @param string $zipCode Code postal de l'utilisateur.
  * @return bool Retourne TRUE si l'inscription réussit, sinon FALSE.
 */
-function RegisterUser($name, $surname, $email, $password, $gender, $address1, $address2, $city, $zipCode)
+function RegisterUser($name, $surname, $email, $password, $gender, $address1, $address2, $cityId, $zipCode)
 {
     // Insère un nouvel utilisateur dans la table "USERS" de la base de données
     $sql = "INSERT INTO `USERS` (`NAME`, `SURNAME`, `EMAIL`, `PASSWORD`, `GENDER`, `ADDRESS1`, `ADDRESS2`, `CITIES_ID`, `ZIP_CODE`)
@@ -35,7 +35,7 @@ function RegisterUser($name, $surname, $email, $password, $gender, $address1, $a
             ":pw" => $password,
             ":gender" => $gender,
             ":address1" => $address1,
-            ":cityID" => $city,
+            ":cityID" => $cityId,
             ":zipCode" => $zipCode
         );
 
@@ -109,7 +109,54 @@ function GetUser($email)
 }
 
 /**
- * Vérifie si un email est déjà présent dans la base de données.
+ * Récupère un utilisateur à partir de son identifiant donné en paramètre.
+ *
+ * @param int $id L'identifiant de l'utilisateur à récupérer.
+ * @return mixed L'utilisateur récupéré sous forme d'objet User, ou false si une erreur est survenue.
+ */
+function GetUserById($id)
+{
+    // Requête SQL qui récupère les données de l'utilisateur.
+    $sql = "SELECT `USERS`.`ID`, `USERS`.`NAME`, `SURNAME`, `EMAIL`, `PASSWORD`, `GENDER`, `ADDRESS1`, `ADDRESS2`, CITIES.NAME as CITY, `ZIP_CODE`, `IS_ADMIN`
+    FROM `USERS`
+    INNER JOIN CITIES ON USERS.CITIES_ID = CITIES.ID
+    WHERE `USERS`.`ID` = :id";
+
+    // Prépare la requête SQL.
+    $statement = EDatabase::prepare($sql);
+
+    try
+    {
+        // Exécute la requête SQL en utilisant l'identifiant passé en paramètre.
+        $statement->execute(array(":id" => $id));
+
+        // Récupère la première ligne de résultat.
+        $row = $statement->fetch(PDO::FETCH_ASSOC, PDO::FETCH_ORI_NEXT);
+
+        // Crée un objet User à partir des données récupérées.
+        return new User(
+            intval($row['ID']),         // ID        : l'identifiant unique de l'utilisateur (entier)
+            $row['NAME'],               // NAME      : le nom de l'utilisateur (chaîne de caractères)
+            $row['SURNAME'],            // SURNAME   : le prénom de l'utilisateur (chaîne de caractères)
+            $row['EMAIL'],              // EMAIL     : l'adresse email de l'utilisateur (chaîne de caractères)
+            $row['PASSWORD'],           // PASSWORD  : le mot de passe haché de l'utilisateur (chaîne de caractères)
+            intval($row['GENDER']),     // GENDER    : le genre de l'utilisateur (entier)
+            $row['ADDRESS1'],           // ADDRESS1  : la première adresse de l'utilisateur (chaîne de caractères)
+            $row['ADDRESS2'],           // ADDRESS2  : la deuxième adresse de l'utilisateur (optionnelle) (chaîne de caractères)
+            $row['CITY'],               // CITY      : le nom de la ville où habite l'utilisateur (chaîne de caractères)
+            intval($row['ZIP_CODE']),   // ZIP_CODE  : le code postal de l'utilisateur (entier)
+            boolval($row['IS_ADMIN'])   // IS_ADMIN  : un booléen qui indique si l'utilisateur est un administrateur ou non (booléen)
+        );
+    }
+    catch (PDOException $e)
+    {
+        // En cas d'erreur, retourne false.
+        return false;
+    }
+}
+
+/**
+ * Vérifie si l'email est déjà présent dans la base de données.
  *
  * @param string $email L'adresse email à rechercher.
  * @return bool True si l'email existe, False sinon.
@@ -143,7 +190,7 @@ function EmailExists($email)
  *
  * @param string $email L'adresse email de l'utilisateur.
  * @param string $password Le mot de passe de l'utilisateur.
- * @return string Un message d'erreur ou une chaîne vide si l'authentification a réussi.
+ * @return bool Retourne true si l'utilisateur est connecté avec succès, sinon retourne false.
  */
 function LoginUser($email, $password)
 {

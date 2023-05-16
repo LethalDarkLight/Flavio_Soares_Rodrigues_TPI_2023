@@ -6,38 +6,41 @@ require_once ROOT.'containers/Image.php';
  * Insère une image encodée en base64 dans la base de données.
  *
  * @param string $content Contenu de l'image encodé en base64.
- * @param string $fileType Type de fichier de l'image.
  * @param string $fileName Nom de fichier de l'image.
- *
- * @return bool Retourne true si l'insertion a réussi, false sinon.
+ * @param string $fileType Type de fichier de l'image.
+ * @param bool $mainImage Indique si l'image est une image principale ou non.
+ * @param int $articlesId ID de l'article auquel l'image est associée.
+ * @return bool Retourne true si l'insertion a réussi, sinon retourne false.
  */
 function AddEnc64Image($content, $fileName, $fileType, $mainImage, $articlesId)
 {
-    // Encodage de l'image en base64
+    // Encodage de l'image en base64.
     $encoded64Content = 'data:'.$fileType.';base64, '.base64_encode($content);
 
-    // Requête SQL pour insérer une image dans la base de données
-    $sql = "INSERT INTO `IMAGES` (`CONTENT`, `NAME`, `TYPE`, `MAIN_IMAGE`, `ARTICLES_ID`) VALUES(:encoded64Content, :fName, :fType, :mainImage, :articlesId)";
+    // Requête SQL pour insérer une image dans la base de données.
+    $sql = "INSERT INTO `IMAGES` (`CONTENT`, `NAME`, `TYPE`, `MAIN_IMAGE`, `ARTICLES_ID`) VALUES(:encoded64Content, :fileName, :fileType, :mainImage, :articlesId)";
 
-    // Prépare la requête SQL
+    // Prépare la requête SQL.
     $statement = EDatabase::prepare($sql);
 
     try
     {
-        // Execute la requête SQL avec les paramètres nécessaire
+        // Exécute la requête SQL avec les paramètres nécessaires.
         $statement->execute(array(
-        ":encoded64Content" => $encoded64Content,
-        ":fName" => $fileName,
-        ":fType" => $fileType,
-        ":mainImage" => $mainImage,
-        ":articlesId" => $articlesId));
+            ":encoded64Content" => $encoded64Content,
+            ":fileName" => $fileName,
+            ":fileType" => $fileType,
+            ":mainImage" => $mainImage,
+            ":articlesId" => $articlesId
+        ));
     }
-    // En cas d'erreur, retourne false
     catch (PDOException $e)
     {
+        // En cas d'erreur, retourne false.
         return false;
     }
-    // Retourne true si tout s'est bien passé
+
+    // Retourne true si tout s'est bien passé.
     return true;
 }
 

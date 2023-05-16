@@ -87,7 +87,7 @@ function GetArticle($name)
 
 /**
  * Récupère un article grâce à son ID donné en paramètre
- * @param int $id l'identifiant unique de l'article
+ * @param int $id L'identifiant unique de l'article
  * @return mixed L'article récupéré sous forme d'objet Article, ou false si une erreur est survenue
  */
 function GetArticleById($id)
@@ -190,7 +190,7 @@ function GetFeaturedArticles()
  * @param int|null $categoryId Identifiant de la catégorie à laquelle appartiennent les articles. Null si aucun filtre n'est appliqué.
  * @param float|null $minPrice Prix minimum des articles. Null si aucun filtre n'est appliqué.
  * @param float|null $maxPrice Prix maximum des articles. Null si aucun filtre n'est appliqué.
- * @return array|false Tableau d'objets Article filtrés ou false en cas d'erreur.
+ * @return array|false Tableau d'objets Article filtrés ou false en cas d'erreur
  */
 function GetFilteredArticles($text, $categoryId, $minPrice, $maxPrice)
 {
@@ -289,4 +289,68 @@ function ArticleExists($name)
     {
         return false;
     }
+}
+
+
+///
+///
+/////
+/////
+////
+function UpdateArticle($userId, $articleId, $quantity)
+{
+    // Requête SQL qui met à jour la quantité de l'article
+    $sql = "UPDATE CART_ITEMS
+    SET QUANTITY = :quantity
+    WHERE USERS_ID = :userId
+    AND ARTICLES_ID = :articleId";
+
+    // Prépare la requête SQL
+    $statement = EDatabase::prepare($sql);
+
+    try
+    {
+        // Exécute la requête SQL pour mettre à jour la quantité de l'article dans le panier
+        $statement->execute(array(':userId' => $userId, ':articleId' => $articleId, ':quantity' => $quantity));
+    }
+    catch (PDOException $e)
+    {
+        // En cas d'erreur, retourne false
+        return false;
+    }
+
+    // Retourne true si la mise à jour a été effectuée avec succès
+    return true;
+}
+
+/**
+ * Diminue le stock d'un article.
+ *
+ * @param int $id Identifiant de l'article.
+ * @param int $stock Quantité à déduire du stock.
+ * @return bool Retourne true si la mise à jour a été effectuée avec succès, sinon false.
+ */
+function DecreaseStock($id, $stock)
+{
+    // Requête SQL qui met à jour la quantité de l'article
+    $sql = "UPDATE ARTICLES
+    SET STOCK = STOCK - :stock
+    WHERE ID = :id";
+
+    // Prépare la requête SQL
+    $statement = EDatabase::prepare($sql);
+
+    try
+    {
+        // Exécute la requête SQL pour mettre à jour la quantité de l'article dans le panier
+        $statement->execute(array(':id' => $id, ':stock' => $stock));
+    }
+    catch (PDOException $e)
+    {
+        // En cas d'erreur, retourne false
+        return false;
+    }
+
+    // Retourne true si la mise à jour a été effectuée avec succès
+    return true;
 }

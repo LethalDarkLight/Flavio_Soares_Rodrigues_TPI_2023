@@ -5,22 +5,16 @@ $REQUIREDLOGIN = true;
 
 require_once './includes/checkAll.php';
 
+// Récupère l'id de l'utilisateur connecté
+$userId = ESessionManager::GetConnectedUserId();
+
+// Récupère les articles du panier pour l'utilisateur connecté
+$cartItems = GetCartItems($userId);
+
 /**
  * Affiche les articles du panier avec leurs informations.
  * @return string Le code HTML contenant les éléments du panier.
 */
-
-
-/*if (isset($_POST['deleteCartItem']) && $_POST['deleteCartItem'] === $article->id)
-{
-    DeleteCartItem($articleId);
-}*/
-
-
-// Récupère les articles du panier pour l'utilisateur connecté
-$cartItems = GetCartItems(ESessionManager::GetConnectedUserId());
-
-
 function ShowCartItems($cartItems)
 {
     // Variables pour le calcul du prix total et de la quantité totale
@@ -50,7 +44,6 @@ function ShowCartItems($cartItems)
         $totalPrice += $totalPriceForOneArticle;
         $totalQuantity += $cartItem->quantity;
 
-
         // Construction du code HTML pour l'article du panier
         $result .= "
         <div class='mx-1 d-flex flex-row align-items-end justify-content-center p-3 w-100'
@@ -59,26 +52,43 @@ function ShowCartItems($cartItems)
             <img class='rounded mx-auto d-block w-25' src='$mainImage->content' alt='$mainImage->name'>
             <div class='w-50 mx-auto text-center'>
                 <p class='fs-4 text-center'><strong>$article->name</strong></p>
-                <p class='fs-5 text-center my-3'><strong>$formatedPrice</strong> <span>CHF</span></p>
-                <input type='number' class='form-control my-3 text-center mx-auto' style='width:100px' id='articleQuantity$cartItem->articlesId' data-Id='$cartItem->articlesId' name='quantity' min='0' step='1' value='$cartItem->quantity'>
+                <p class='fs-5 text-center my-3'>$formatedPrice <span>CHF</span></p>
+                <input type='number' class='form-control my-3 text-center mx-auto' style='width:100px' id='articleQuantity$cartItem->articlesId' data-Id='$cartItem->articlesId' name='quantity' min='1' max='$article->stock' step='1' value='$cartItem->quantity'>
             </div>
             <div class='d-flex flex-row flex-wrap text-center mx-auto w-25'>
-                <p class='fs-5 text-center w-100'>Total : <span id='articleTotal$cartItem->articlesId'>$formattedPriceForOneArticle</span></p>
-                <button name='deleteCartItem' type='submit' class='btn btn-danger mb-3 w-100' value='$article->id'>Supprimer</button>
+                <p class='fs-5 text-center w-100'>Total : <strong><span id='articleTotal$cartItem->articlesId'>$formattedPriceForOneArticle</span></strong></p>
+                <form method='post' class='text-center w-100'>
+                    <button name='deleteCartItem' type='submit' class='btn btn-danger mb-3 w-100' value='$cartItem->articlesId'>Supprimer</button>
+                </form>
             </div>
         </div>
         <div class='border border-2 rounded w-100 my-2'></div>";
     }
 
+    // Enlève l'objet du panier si on clique sur le bouton supprimer
+    if (isset($_POST['deleteCartItem']) && intval($_POST['deleteCartItem']) == $cartItem->articlesId)
+    {
+        DeleteCartItem(ESessionManager::GetConnectedUserId(), $cartItem->articlesId);
+    }
+
     // Formatage du prix avec 2 décimales et un séparateur de milliers
     $formattedTotalPrice = number_format($totalPrice, 2, '.', " ").' CHF';
     // Construction du code HTML pour le total du panier
-    $result .="
-    <div class='d-flex flex-column justify-content-center w-100'>
-        <p class='fs-5 text-center'>Total <strong>".count($cartItems)." article(s)</strong> : <span id='totalPrice' data-totalPrice='$totalPrice'>$formattedTotalPrice</span></p>
-        <button name='order' type='submit' class='btn btn-primary submitBtn mb-5 w-50 mx-auto' value='order'>Commander</button>
-        <button name='order' type='submit' class='btn btn-primary submitBtn mb-5 w-50 mx-auto' id='save'>Sauvegarder</button>
-    </div>";
+    if($cartItems != null)
+    {
+        $result.= "
+        <div class='d-flex flex-column justify-content-center w-100'>
+            <p class='fs-5 text-center'>Total <strong>".count($cartItems)." </strong>article(s) : <strong><span id='totalPrice' data-totalPrice='$totalPrice'>$formattedTotalPrice</span></strong></p>
+            <form method='get' action='validateOrder.php' class='text-center w-100'>
+                <button name='order' id='order' type='submit' class='btn btn-primary submitBtn mb-3 my-2 w-50 mx-auto' value='order'>Commander</button>
+            </form>
+            <button name='save' type='submit' class='btn btn-success submitBtn mb-5 w-50 mx-auto' id='save'>Sauvegarder</button>
+        </div>";
+    }
+    else
+    {
+        $result .="<div class='fs-5 alert alert-danger mt-4 w-100 text-center' role='alert'>Votre panier est vide</div>";
+    }
     
     // Retourne le code HTML contenant les éléments du panier
     return $result;
@@ -122,7 +132,6 @@ function ShowCartItems($cartItems)
     foreach ($cartItems as $cartItem) 
     {
 ?>        
-
         article = {
         "id": <?php echo $cartItem->articlesId;?>, // id de l'article
         "quantity": <?php echo $cartItem->quantity;?>, // quantité de l'article
@@ -133,68 +142,82 @@ function ShowCartItems($cartItems)
 ?>
 
 <?php
+    // Parcourir les articles du panier
     foreach ($cartItems as $cartItem) 
     {
 ?>        
-
-        // Écouteur d'événement pour la modification de la quantité d'un article 
+        // Sélectionne l'élément de quantité de l'article
         element = document.querySelector("#articleQuantity<?php echo $cartItem->articlesId;?>");
         element.addEventListener("change", (event) => {
 
-        let previousQuantity = parseInt(event.target.attributes.value.value); 
-        // Récupère l'élément de quantité
-        let quantity = parseInt(event.target.value); // Convertit la valeur de quantité en entier
-        let articleId = parseInt(event.target.getAttribute("data-Id"));
-        articles.forEach( (item) => {
-            if (item.id == articleId)
-                item.quantity = quantity;
+            // Obtient la quantité précédente de l'article
+            let previousQuantity = parseInt(event.target.attributes.value.value); 
+            
+            // Obtient la nouvelle quantité de l'article
+            let quantity = parseInt(event.target.value); 
+            
+            // Obtient l'ID de l'article
+            let articleId = parseInt(event.target.getAttribute("data-Id"));
+            
+            // Parcourt les articles et met à jour la quantité correspondante
+            articles.forEach((item) => {
+                if (item.id == articleId)
+                    item.quantity = quantity;
+            });
+
+            // Récupère l'élément d'article pour obtenir le prix
+            let el = document.querySelector("#article<?php echo $cartItem->articlesId;?>");
+            let price = parseFloat(el.getAttribute("data-price"));
+            
+            // Calcule le total précédent avant le changement de quantité
+            let previousTotal = previousQuantity * price;
+            
+            // Calcule le nouveau total en multipliant la quantité par le prix
+            let total = quantity * price;
+
+            // Calcule la variation de total
+            let deltaTotal = total - previousTotal;
+
+            // Récupère l'élément d'affichage du total et met à jour sa valeur formatée
+            el = document.querySelector("#articleTotal<?php echo $cartItem->articlesId;?>");
+            let tot = new Intl.NumberFormat('fr-CH', { style: 'currency', currency: 'CHF' }).format(total);
+            el.innerHTML = tot; // Met à jour le contenu HTML de l'élément avec le total formaté
+
+            // Met à jour la valeur de l'attribut "value" avec la nouvelle quantité
+            event.target.attributes.value.value = quantity;
+
+            // Récupère l'élément du total global
+            el = document.getElementById('totalPrice');
+            let currentTotal = parseFloat(el.getAttribute("data-totalPrice"));
+            
+            // Calcule le nouveau total global en ajoutant la variation de total
+            let newTotal = currentTotal + deltaTotal;
+            
+            // Met à jour l'affichage du nouveau total formaté
+            tot = new Intl.NumberFormat('fr-CH', { style: 'currency', currency: 'CHF' }).format(newTotal);
+            el.innerHTML = tot; // Met à jour le contenu HTML de l'élément avec le total formaté
+            
+            // Met à jour l'attribut "data-totalPrice" avec le nouveau total global
+            el.setAttribute("data-totalPrice", newTotal);
         });
-
-        // Récupère l'élément d'article pour obtenir le prix
-        let el = document.querySelector("#article<?php echo $cartItem->articlesId;?>");
-        let price = parseFloat(el.getAttribute("data-price")); // Récupère le prix converti en nombre à virgule flottante
-        
-        // Calcule le total précédent avant changement de la quantité
-        let previousTotal = previousQuantity * price;
-        // Calcule le total en multipliant la quantité par le prix
-        let total = quantity * price;
-
-        let deltaTotal = total - previousTotal;
-
-        // Récupère l'élément d'affichage du total et met à jour sa valeur formatée
-        el = document.querySelector("#articleTotal<?php echo $cartItem->articlesId;?>");
-        let tot = new Intl.NumberFormat('fr-CH', { style: 'currency', currency: 'CHF' }).format(total);
-        el.innerHTML = tot; // Met à jour le contenu HTML de l'élément avec le total formaté
-
-        // Mettre la nouvelle quantité
-        event.target.attributes.value.value = quantity;
-
-        // Mettre à jour le total
-        el = document.getElementById('totalPrice');
-        let currentTotal = parseFloat(el.getAttribute("data-totalPrice"));
-        let newTotal = currentTotal + deltaTotal;
-        tot = new Intl.NumberFormat('fr-CH', { style: 'currency', currency: 'CHF' }).format(newTotal);
-        el.innerHTML = tot; // Met à jour le contenu HTML de l'élément avec le total formaté
-        // Garder le nouveau total
-        el.setAttribute("data-totalPrice", newTotal);
-
-
-    });
 <?php
     }
 ?>
+
 // Event pour éviter de fermer la page ou changer
 window.addEventListener('beforeunload', (event) => {
-  event.returnValue = `Etes-vous sûr de vouloir quitter?`;
+    event.returnValue = 'Les modifications que vous avez apportées ne seront peut-être pas enregistrées.';
 });
 
+// Sauvegarde la quantité si le bouton sauvegarder est clicker
 document.querySelector("#save").addEventListener("click", (event) => {
     saveCart(id, articles);
 });
 
-
-
-
+// Sauvegarde la quantité si le bouton commander est clicker
+document.querySelector("#order").addEventListener("click", (event) => {
+    saveCart(id, articles);
+});
 
 /**
  * Exécuter la requête ajax pour sauvegarder le panier de l'utilisateur
@@ -209,15 +232,11 @@ function saveCart(id, cart)
     jsonObj.id = id;
     jsonObj.cart = cart;
 
-    //let searchParams = new URLSearchParams(jsonObj);
-
     fetch('./tools/saveCart.php', {
         method: 'POST',
         headers: {
-            //'Content-Type': 'application/x-www-form-urlencoded'
             'Content-Type': 'application/json; charset=utf-8'
         },
-        //body: searchParams.toString()
         body: JSON.stringify(jsonObj)
     })
 

@@ -15,12 +15,12 @@ function ShowArticleDetails($article)
         <div class='mt-3 mx-2 text-center'>
             $description
         </div>";
-        if (ESessionManager::IsValid() && ESessionManager::IsConnectedUserAdmin() === true)
-        {
-            $result.= "<a class='btn btn-primary my-2 mx-auto detailsBtn' href=''>Modifier l'article</a>";
-        }
 
-        if (ESessionManager::IsValid() && ESessionManager::IsConnectedUserAdmin() === false)
+        if (!ESessionManager::IsValid())
+        {
+            $result.= "<a class='btn btn-primary my-2 mx-auto detailsBtn' href='login.php'>Ajouter au panier</a>";
+        }
+        elseif(ESessionManager::IsConnectedUserAdmin() === false)
         {
             $result .= "
             <div class='d-flex my-2'>
@@ -29,10 +29,9 @@ function ShowArticleDetails($article)
                 </form>
             </div>";
         }
-
-        if (!ESessionManager::IsValid())
+        else
         {
-            $result.= "<a class='btn btn-primary my-2 mx-auto detailsBtn' href='login.php'>Ajouter au panier</a>";
+            $result.= "<a class='btn btn-primary my-2 mx-auto detailsBtn' href='updateArticle.php?id=$article->id'>Modifier l'article</a>";
         }
         
     $result.="</div>";

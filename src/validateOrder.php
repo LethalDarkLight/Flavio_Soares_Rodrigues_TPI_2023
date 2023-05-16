@@ -10,24 +10,60 @@ define("ZIP_CODE", "1213 Onex ");
 define("COUNTRY", "Suisse");
 define("IBAN", "CH35 0023 0241 9371 8929 9");
 
+// Récupère l'utilisateur
+$user = GetUserById(ESessionManager::GetConnectedUserId());
+
 // Si il appuie sur le bouton 
 if (isset($_POST['validateOrder']))
 {
+    // Récupère les articles du panier pour l'utilisateur connecté
+    $cartItems = GetCartItems(ESessionManager::GetConnectedUserId());
+
     $suject = "Confirmation de votre commande GYM";
     $body = "
     <div style='font-size: 16px; color: black'>
-        <p>Votre commande sera traitée dans les plus brefs délais</p>
-        <p>Résumé de la commande :</p>";
+        <p>Votre commande sera traitée dans les plus brefs délais.</p>
+        <p style='font-size: 18px'><b>Résumé de la commande :<b></p>";
 
-        // Faire une boucle qui récupères les articles du panier (Nom, prix, quantité et le total quantité*prix)
-        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Afficher le montant total à payer
+    $totalPrice = 0;
+
+    // Parcourt chaque élément du panier
+    foreach ($cartItems as $cartItem) 
+    {
+        // Récupère les informations de l'article
+        $article = GetArticleById($cartItem->articlesId);
+
+        $formatedPrice = number_format($article->price, 2, '.', " ").' CHF';
+
+        // Calcul du prix total pour cet article
+        $totalPriceForOneArticle = $article->price * $cartItem->quantity;
+
+        // Formatage du prix avec 2 décimales et un séparateur de milliers
+        $formattedPriceForOneArticle = number_format($totalPriceForOneArticle, 2, '.', " ").' CHF';
+
+        // Mise à jour du prix total et de la quantité totale
+        $totalPrice += $totalPriceForOneArticle;
+
+        $formattedTotalPrice = number_format($totalPrice, 2, '.', " ").' CHF';
+
+        // Construction du code HTML pour l'article du panier
+        $body .= "<p> <b>$article->name</b> - Prix : <b>$formatedPrice</b> - Quantité : <b>$cartItem->quantity</b> - Total : <b>$formattedPriceForOneArticle</b></p>";
+    
+        // Modifie la quantité en stock
+        DecreaseStock($cartItem->articlesId, $cartItem->quantity);
+
+        // Supprime les articles du panier
+        DeleteCartItem(ESessionManager::GetConnectedUserId(), $cartItem->articlesId);
+    }
+        $body.= "<p>Total : <b>$formattedTotalPrice</b></p>";
 
         $body .= "<p style='margin-top:20px;'>Heureux de vous avoir comme client,</p>
-        <p style='font-weight: bold; color: #0B5ED7; font-size: 18px;'>L'équipe GYM</p>
+        <p style='font-weight: bold; color: #0B5ED7; font-size: 22px;'>L'équipe GYM</p>
     </div>
     ";
-    $email = ""; // Récupérer l'email stocker en session
+    
+    $email = $user->email; 
+
     // Envois un mail
     sendEmail($email, $suject, $body);
 }
