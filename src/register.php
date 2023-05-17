@@ -62,7 +62,7 @@
 
             sendEmail($email, $mailTitle, $mailBody);
 
-            $msg = "<p id='success'> Votre compte à été créer. Un email de confirmation vous a été envoyer. 
+            $msg = "<p id='success'> Votre compte a été créer. Un email de confirmation vous a été envoyer. 
                 <a class='card-link text-decoration-none' href='login.php'> Connectez-vous</a></p>";
 
             // Vide toutes les valeurs du formulaire

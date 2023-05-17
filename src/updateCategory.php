@@ -87,7 +87,7 @@
         <form method="post" onsubmit="return validateForm()">
         
             <div class="my-4">
-                <label for="categories" class="form-label">Choisissez une catégorie à modifier</label>
+                <label for="categories" class="form-label">Choisissez une catégorie à modifier <i class="fa-sharp fa-solid fa-star-of-life text-primary"></i></label>
                 <select name='categories' id="categories" class='form-select filterControl' value='$categoriesInput'>
                     <option value='0' selected>---</option>
                     <?=ShowCategories($categoriesInput)?>
@@ -95,7 +95,7 @@
             </div>
 
             <div class="my-4">
-                <label for="name" class="form-label">Nouveau nom de la catégorie</label>
+                <label for="name" class="form-label">Nouveau nom de la catégorie <i class="fa-sharp fa-solid fa-star-of-life text-primary"></i></label>
                 <input name="name" type="name" class="form-control" id="name" onkeyup="toUpperCase()" value="<?=$name?>">
                 <div id="nameHelp" class="form-text text-danger"></div>
             </div>

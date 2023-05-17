@@ -297,21 +297,33 @@ function ArticleExists($name)
 /////
 /////
 ////
-function UpdateArticle($userId, $articleId, $quantity)
+function UpdateArticle($articleId, $name, $description, $price, $stock, $featured, $categoryId)
 {
-    // Requête SQL qui met à jour la quantité de l'article
-    $sql = "UPDATE CART_ITEMS
-    SET QUANTITY = :quantity
-    WHERE USERS_ID = :userId
-    AND ARTICLES_ID = :articleId";
+    // Requête SQL qui met à jour l'article
+    $sql = "UPDATE `ARTICLES`
+            SET `NAME` = :name,
+                `DESCRIPTION` = :description,
+                `PRICE` = :price,
+                `STOCK` = :stock,
+                `FEATURED` = :featured,
+                `CATEGORIES_ID` = :categoryId
+            WHERE `ID` = :articleId";
 
     // Prépare la requête SQL
     $statement = EDatabase::prepare($sql);
 
     try
     {
-        // Exécute la requête SQL pour mettre à jour la quantité de l'article dans le panier
-        $statement->execute(array(':userId' => $userId, ':articleId' => $articleId, ':quantity' => $quantity));
+        // Exécute la requête SQL pour mettre à jour l'article dans la base de données
+        $statement->execute(array(
+            ":name" => $name,
+            ":description" => $description,
+            ":price" => $price,
+            ":stock" => $stock,
+            ":featured" => $featured,
+            ":categoryId" => $categoryId,
+            ":articleId" => $articleId
+        ));
     }
     catch (PDOException $e)
     {

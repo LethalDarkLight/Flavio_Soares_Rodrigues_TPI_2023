@@ -1,3 +1,5 @@
+
+
 let featured = document.getElementById("featured");
 
 // Permet de valider les entrer dans le formulaire
@@ -5,10 +7,10 @@ function validateForm()
 {
     // Saisie de l'utilisateur
     let name = document.getElementById("name");                 // Récupère le nom 
-    let description = tinymce.get("description").getContent();   // Récupère la description
+    let description = editor ? editor.getContent() : "";        // Récupère la description
     let price = document.getElementById("price");               // Récupère le prix
     let image = document.getElementById("image");               // Récupère les images
-    let category = document.getElementById("categories");       // Récupère la categorie
+    let category = document.getElementById("categories");       // Récupère la catégorie
     let stock = document.getElementById("stock");               // Récupère la quantité en stock
 
     // Message d'erreur afficher dans une div
@@ -19,8 +21,6 @@ function validateForm()
     let categoryErrorMsg = document.getElementById("categoryHelp"); 
     let stockErrorMsg = document.getElementById("stockHelp");
     let errorMsg = document.getElementById("errorMsg");
-
-    toggleCheckboxValue(featured);
 
     // Vérification de la quantité en stock
     if (stock.value.length <= 0)
@@ -75,14 +75,13 @@ function validateForm()
     }
 
     // Vérification de la description
-    if (description.length < 10)
-    {
+    if (description.length < 10) {
         // Affiche un message d'erreur
         descriptionErrorMsg.innerText = "La description doit contenir au moins 10 caractères.";
-        tinymce.get("description").focus(); // Définit le focus sur le champ de texte
-    }
-    else
-    {
+        if (editor) {
+        editor.focus(); // Définit le focus sur l'éditeur TinyMCE
+        }
+    } else {
         // Efface le message d'erreur
         descriptionErrorMsg.innerText = "";
     }
@@ -100,44 +99,22 @@ function validateForm()
         nameErrorMsg.innerText = "";
     }
 
-    // Si les messages d'erreur sont vides on retourne true sinon false
-    if (nameErrorMsg.innerText === "" && descriptionErrorMsg.innerText === "" && priceErrorMsg.innerHTML === "" && imageErrorMsg.innerText === "" && categoryErrorMsg.innerText === "" && stockErrorMsg.innerText === "")
-    {
-        // Renvoie vrai, la saisie est valide
-        return true; 
-    }
-    else
-    {
-        // Efface le message d'erreur générer avec php
-        errorMsg.innerHTML = "";
+    // Si les messages d'erreur sont vides, on retourne true, sinon false
+  if (nameErrorMsg.innerText === "" && descriptionErrorMsg.innerText === "" && priceErrorMsg.innerHTML === "" && imageErrorMsg.innerText === "" && categoryErrorMsg.innerText === "" && stockErrorMsg.innerText === "") {
+    // Renvoie vrai, la saisie est valide
+    return true;
+  } else {
+    // Efface le message d'erreur généré avec php
+    errorMsg.innerHTML = "";
 
-        // Renvoie faux, il y a des erreurs de saisie
-        return false;
-    }
+    // Renvoie faux, il y a des erreurs de saisie
+    return false;
+  }
 }
 
 // Regarde la valeur de la check box et change la valeur de featured
-/*function toggleCheckboxValue(featured)
+function toggle(featured)
 {
-    if (featured.checked)
-    {
-        featured.value = "1";
-    }   
-    else
-    {
-        featured.value = "0";
-    }
-}*/
-
-// Regarde la valeur de la check box et change la valeur de featured
-function toggleCheckboxValue(featured)
-{
-    if (featured.value == true)
-    {
-        featured.checked = true;
-    }   
-    else
-    {
-        featured.checked = false;
-    }
+    let checkbox = document.getElementById(featured);
+    checkbox.checked = !checkbox.checked;
 }

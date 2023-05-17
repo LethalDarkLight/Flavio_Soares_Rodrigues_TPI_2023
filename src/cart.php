@@ -58,17 +58,17 @@ function ShowCartItems($cartItems)
             <div class='d-flex flex-row flex-wrap text-center mx-auto w-25'>
                 <p class='fs-5 text-center w-100'>Total : <strong><span id='articleTotal$cartItem->articlesId'>$formattedPriceForOneArticle</span></strong></p>
                 <form method='post' class='text-center w-100'>
-                    <button name='deleteCartItem' type='submit' class='btn btn-danger mb-3 w-100' value='$cartItem->articlesId'>Supprimer</button>
+                    <button name='deleteCartItem' type='submit' class='btn btn-danger mb-3 w-100' value='$cartItem->articlesId'><i class='fa-solid fa-trash fa-lg'></i> Supprimer</button>
                 </form>
             </div>
         </div>
         <div class='border border-2 rounded w-100 my-2'></div>";
-    }
 
-    // Enlève l'objet du panier si on clique sur le bouton supprimer
-    if (isset($_POST['deleteCartItem']) && intval($_POST['deleteCartItem']) == $cartItem->articlesId)
-    {
-        DeleteCartItem(ESessionManager::GetConnectedUserId(), $cartItem->articlesId);
+        // Enlève l'objet du panier si on clique sur le bouton supprimer
+        if (isset($_POST['deleteCartItem']) && intval($_POST['deleteCartItem']) == $cartItem->articlesId)
+        {
+            DeleteCartItem(ESessionManager::GetConnectedUserId(), $cartItem->articlesId);
+        }
     }
 
     // Formatage du prix avec 2 décimales et un séparateur de milliers
@@ -80,9 +80,9 @@ function ShowCartItems($cartItems)
         <div class='d-flex flex-column justify-content-center w-100'>
             <p class='fs-5 text-center'>Total <strong>".count($cartItems)." </strong>article(s) : <strong><span id='totalPrice' data-totalPrice='$totalPrice'>$formattedTotalPrice</span></strong></p>
             <form method='get' action='validateOrder.php' class='text-center w-100'>
-                <button name='order' id='order' type='submit' class='btn btn-primary submitBtn mb-3 my-2 w-50 mx-auto' value='order'>Commander</button>
+                <button name='order' id='order' type='submit' class='btn btn-primary submitBtn mb-3 my-2 w-50 mx-auto' value='order'><i class='fa-solid fa-lg fa-truck'></i> Commander</button>
             </form>
-            <button name='save' type='submit' class='btn btn-success submitBtn mb-5 w-50 mx-auto' id='save'>Sauvegarder</button>
+            <button name='save' type='submit' class='btn btn-success submitBtn mb-5 w-50 mx-auto' id='save'><i class='fa-solid fa-lg fa-floppy-disk'></i> Sauvegarder</button>
         </div>";
     }
     else

@@ -14,20 +14,24 @@ if (!isset($_GET['id']))
 }
 
 $article = GetArticleById(intval($_GET['id']));
-var_dump($article);
+$articleId = $article->id;
+
+//var_dump($images);
+
+$description = $article->description;
+$featuredValue = $article->featured ? 'true' : 'false';
 
 // Initialisation des variables    
 /*$name = "";
 $description = "";
 $price = 0;
 $category = 0;
-$stock = 0;
-$featured = 0;*/
+$stock = 0;*/
 
 $msg = "";
 
 // Si le bouton du formulaire a été cliqué
-if (isset($_POST['submit']))
+if (isset($_POST['submit']) && $_POST['submit'] == "Valider")
 {
     $name = filter_input(INPUT_POST, "name", FILTER_SANITIZE_SPECIAL_CHARS);                    // Nom
     $description = filter_input(INPUT_POST, "description", FILTER_SANITIZE_SPECIAL_CHARS);      // Description
@@ -47,7 +51,7 @@ if (isset($_POST['submit']))
         $files = $_FILES['files']; // Récupère les images
 
         // Ajoute un article
-        if (AddArticle($name, $description, $price, $stock, $featured, $category))
+        if (UpdateArticle($articleId, $name, $description, $price, $stock, $featured, $category))
         {
             $articleId = GetArticle($name)->id; // Récupère l'id de l'article qui vien d'être créer
             
@@ -72,6 +76,33 @@ if (isset($_POST['submit']))
         }
     }
 }
+
+// Affiche les images
+function ShowImages($articleId)
+{
+    $images = GetImages($articleId);
+
+    $result = "";
+
+    foreach ($images as $key => $image)
+    {
+        // Supprime une image lors ce que l'on clique sur le boutton supprimer
+        if (isset($_POST['deleteImage']) && intval($_POST['deleteImage']) == $image->id)
+        {
+            DeleteImage($image->id);
+        }
+
+        $result .= "
+        <div class='d-flex flex-row align-items-center'>
+            <img src='$image->content' alt='$image->name' style='width:200px'>
+            <form method='post' class='text-center'>
+                <button name='deleteImage' type='submit' class='btn btn-danger mb-3 mx-4' style='width:200px; height:60px' value='$image->id'><i class='fa-solid fa-trash fa-lg'></i> Supprimer</button>
+            </form>
+        </div>";
+    }
+    echo $result;
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -109,7 +140,7 @@ if (isset($_POST['submit']))
 
             <div class="my-4">
                 <label for="description" class="form-label">Description <i class="fa-sharp fa-solid fa-star-of-life text-primary"></i></label>
-                <textarea id="description" name="description" value="<?=$article->description?>"></textarea>
+                <textarea id="description" name="description" value=""></textarea>
                 <div id="descriptionHelp" class="form-text text-danger"></div>
             </div>
 
@@ -117,6 +148,10 @@ if (isset($_POST['submit']))
                 <label for="price" class="form-label">Prix <i class="fa-sharp fa-solid fa-star-of-life text-primary"></i></label>
                 <input type="number" id="price" class="form-control" name="price" step="0.05" min="0" value="<?=$article->price?>">
                 <div id="priceHelp" class="form-text text-danger"></div>
+            </div>
+
+            <div >
+                <?=ShowImages($articleId)?>
             </div>
 
             <div class="my-4">
@@ -142,7 +177,7 @@ if (isset($_POST['submit']))
 
             <div class="my-4">
                 <label for="featured" class="form-check-label">Mise en avant </i></label>
-                <input type="checkbox" id="featured" class="form-check-input" name="featured" value="<?=$article->featured?>">
+                <input type="checkbox" id="featured" class="form-check-input" name="featured" value="<?=$article->featured?>" <?= $featuredValue === 'true' ? 'checked' : '' ?>>
             </div>
 
             <div class="my-4">
@@ -153,6 +188,13 @@ if (isset($_POST['submit']))
 
 <script src="./assets/libraries/tinyMCE/tinymce/tinymce.min.js"></script>
 <script src="./assets/libraries/tinyMCE/parametreTinymce.js"></script>
+
+<script> let descriptionContent = "<?php echo htmlspecialchars($description); ?>"
+
+    let editor = tinymce.get('description').setContent(descriptionContent);
+
+</script>
+
 <script src="./assets/js/validateUpdateArticle.js"></script>
 <script src="./assets/libraries/bootstrap/bootstrap.js"></script>
 

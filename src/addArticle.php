@@ -130,7 +130,7 @@ if (isset($_POST['submit']))
             </div>
 
             <div class="my-4">
-                <label for="featured" class="form-check-label">Mise en avant </i></label>
+                <label for="featured" class="form-check-label">Mis en avant </i></label>
                 <input type="checkbox" id="featured" class="form-check-input" name="featured">
             </div>
 

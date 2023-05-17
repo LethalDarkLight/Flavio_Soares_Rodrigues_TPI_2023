@@ -57,7 +57,7 @@
 
         <form method="post" onsubmit="return validateForm()">
             <div class="my-4">
-                <label for="name" class="form-label">Nom de la catégorie</label>
+                <label for="name" class="form-label">Nom de la catégorie <i class="fa-sharp fa-solid fa-star-of-life text-primary"></i></label>
                 <input name="name" type="name" class="form-control" id="name" onkeyup="toUpperCase()" value="<?=$name?>">
                 <div id="nameHelp" class="form-text text-danger"></div>
             </div>

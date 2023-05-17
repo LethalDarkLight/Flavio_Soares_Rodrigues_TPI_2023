@@ -66,6 +66,9 @@ if (isset($_POST['validateOrder']))
 
     // Envois un mail
     sendEmail($email, $suject, $body);
+
+    header('location: index.php');
+    exit();
 }
 
 ?>
