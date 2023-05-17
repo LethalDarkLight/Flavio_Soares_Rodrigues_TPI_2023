@@ -143,7 +143,7 @@
 
             <!-- Adresse 2 -->
             <div class="my-4">
-                <label for="address2" class="form-label">Address 2</label>
+                <label for="address2" class="form-label">Adresse 2</label>
                 <input name="address2" type="text" class="form-control" id="address2" value="<?=$address2?>">
             </div>
 

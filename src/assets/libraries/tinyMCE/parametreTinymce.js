@@ -1,16 +1,13 @@
 tinymce.init({
     selector: '#description',
-
     // Plugins
     plugins: 'lists code emoticons link wordcount',
-
     // Toolbar
     toolbar: "undo redo | styles fontfamily fontsize | bold italic underline strikethrough subscript superscript | alignleft aligncenter alignright alignjustify| numlist bullist link | forecolor backcolor | outdent indent emoticons",
-
     // Permet de mettre Arial comme police par défault
-    setup: function (ed) {
-        ed.on('init', function (e) {
-            ed.execCommand("fontName", false, "Arial");
+    setup: function (editor) {
+        editor.on('init', function (e) {
+            editor.execCommand("fontName", false, "Arial");
         });
     },
 

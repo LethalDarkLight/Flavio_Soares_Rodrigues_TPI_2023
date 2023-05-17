@@ -110,7 +110,7 @@ function ShowImages($articleId)
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ajouter un article</title>
+    <title>Modifier un article</title>
 
     <!-- Fontawesome -->
     <link href="assets/libraries/fontawesome/css/fontawesome.css" rel="stylesheet">
@@ -124,7 +124,8 @@ function ShowImages($articleId)
     <!-- Custom CSS -->
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
-<body onload="toggleCheckboxValue(document.getElementById('featured'))">
+<body>
+<!--body onload="toggle(document.getElementById('featured'))"-->
     <?=ShowNavbar()?>
     <main class="mx-auto mt-5">
         <h2 class="mb-5">Modifier un article</h2>
@@ -188,15 +189,19 @@ function ShowImages($articleId)
 
 <script src="./assets/libraries/tinyMCE/tinymce/tinymce.min.js"></script>
 <script src="./assets/libraries/tinyMCE/parametreTinymce.js"></script>
-
-<script> let descriptionContent = "<?php echo htmlspecialchars($description); ?>"
-
-    let editor = tinymce.get('description').setContent(descriptionContent);
-
-</script>
-
 <script src="./assets/js/validateUpdateArticle.js"></script>
 <script src="./assets/libraries/bootstrap/bootstrap.js"></script>
 
 </body>
+<script> 
+    let descriptionContent = "<?php echo htmlspecialchars($description); ?>"
+    window.addEventListener("load", function(){
+        let el = tinymce.get('description');
+        if (el)
+            el.setContent(descriptionContent);
+    });
+
+
+</script>
+
 </html>
