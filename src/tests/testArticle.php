@@ -14,7 +14,6 @@ else
     $msg = "n'existe pas alors on peut créer l'article";
     AddArticle($articleName, "L’équipement parfait pour le développement du bas du corps. Maximisez les bénéfices des squats avec Hack Squat", 6999.95, 3, 0, 1); // Créer un article
 }
-
 echo($msg);
 
 var_dump(GetFilteredArticles("bell", 0, 0, 0));

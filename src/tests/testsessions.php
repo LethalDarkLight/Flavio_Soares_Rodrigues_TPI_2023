@@ -13,6 +13,7 @@ if (ESessionManager::IsValid() === false)
 ESessionManager::SetUser(250, false);
 
 $userId = ESessionManager::GetConnectedUserId();
+
 if ($userId === false)
 {
     echo 'pas connecté';

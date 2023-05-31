@@ -199,14 +199,23 @@ function ShowCartItems($cartItems)
             
             // Met à jour l'attribut "data-totalPrice" avec le nouveau total global
             el.setAttribute("data-totalPrice", newTotal);
+
+            // Modifié
+            modified = true;
         });
 <?php
     }
 ?>
 
+// Savoir si un article à été modifier
+var modified = false;
+
 // Event pour éviter de fermer la page ou changer
 window.addEventListener('beforeunload', (event) => {
-    event.returnValue = 'Les modifications que vous avez apportées ne seront peut-être pas enregistrées.';
+    if (modified)
+    {
+        event.returnValue = 'Les modifications que vous avez apportées ne seront pas enregistrées.';
+    }
 });
 
 // Sauvegarde la quantité si le bouton sauvegarder est clicker
@@ -231,6 +240,8 @@ function saveCart(id, cart)
 
     jsonObj.id = id;
     jsonObj.cart = cart;
+
+    modified = false;
 
     fetch('./tools/saveCart.php', {
         method: 'POST',
